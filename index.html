@@ -213,6 +213,7 @@ details .in{padding:0 14px 14px}
 <main>
   <!-- Startscreen -->
   <section class="view on" id="v-home">
+    <div class="banner hidden" id="updateBanner"></div>
     <div class="banner hidden" id="backupBanner"></div>
     <button class="big" data-go="essen">
       <div class="ic ic-essen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 3v8a2 2 0 0 0 4 0V3M7 11v10"/><path d="M17 3c2 1.5 2.5 3.5 2 6-.3 1.5-1 2-2 2s-1.7-.5-2-2c-.5-2.5 0-4.5 2-6z"/><path d="M17 11v10"/></svg></div>
@@ -265,7 +266,7 @@ details .in{padding:0 14px 14px}
    Teil 1: Konstanten, Hilfsfunktionen, IndexedDB
    ============================================================ */
 'use strict';
-const APP_VERSION = '1.0.0';
+const APP_VERSION = '1.1.0';
 const DB_NAME = 'verdauungstagebuch';
 const DB_VERSION = 1;
 const STORES = ['essen','stuhl','tag','meta'];
@@ -1262,9 +1263,12 @@ async function openInfo(){
   let persisted = null;
   try{ if(navigator.storage && navigator.storage.persisted) persisted = await navigator.storage.persisted(); }catch(e){}
 
+  const sw = await swInfo();
   const c1 = el('div',{class:'card'});
   c1.appendChild(el('h3',{text:'Status'}));
-  [['Version','v'+APP_VERSION],['Einträge', (essen.length+stuhl.length)+' + '+tag.length+' Tage'],
+  [['Version','v'+APP_VERSION],
+   ['Offline-Cache', sw.state + (sw.cache ? ' · v'+sw.cache : '') +
+      (sw.cache && sw.cache !== APP_VERSION ? '  ⚠ Version weicht ab' : '')],['Einträge', (essen.length+stuhl.length)+' + '+tag.length+' Tage'],
    ['Erste Nutzung', first ? isoDate(first) : '–'],
    ['Speicher dauerhaft', persisted===null?'unbekannt':(persisted?'ja':'nein (nicht kritisch)')],
    ['Zeitzone', Intl.DateTimeFormat().resolvedOptions().timeZone+' ('+offsetStr(new Date())+')']
@@ -1315,12 +1319,74 @@ async function openInfo(){
   root.appendChild(dz);
 }
 
+/* ---------- Service Worker: Offline-Start und kontrollierte Updates ---------- */
+let SW_REG = null, SW_ACCEPTED = false, SW_LAST_CHECK = 0;
+
+function showUpdateBanner(worker){
+  const b = $('#updateBanner');
+  b.innerHTML = '';
+  b.appendChild(el('div',{},'<b>Neue Version bereit.</b> Wird beim Aktualisieren geladen.'));
+  const go = el('button',{type:'button',text:'Jetzt aktualisieren'});
+  go.onclick = ()=>{
+    if(!$('#v-home').classList.contains('on')){ toast('Zuerst den offenen Eintrag speichern'); return; }
+    SW_ACCEPTED = true;
+    go.textContent = 'lädt …';
+    worker.postMessage('SKIP_WAITING');
+    /* Falls controllerchange ausbleibt: nach 3 s trotzdem neu laden */
+    setTimeout(()=>{ if(SW_ACCEPTED) location.reload(); }, 3000);
+  };
+  b.appendChild(go);
+  b.classList.remove('hidden');
+}
+function watchInstalling(reg){
+  const nw = reg.installing;
+  if(!nw) return;
+  nw.addEventListener('statechange', ()=>{
+    /* controller != null heisst: es lief schon eine Version — also ein echtes Update */
+    if(nw.state === 'installed' && navigator.serviceWorker.controller) showUpdateBanner(nw);
+  });
+}
+function swCheck(){
+  if(!SW_REG) return;
+  const t = Date.now();
+  if(t - SW_LAST_CHECK < 9e5) return;      /* höchstens alle 15 Minuten */
+  SW_LAST_CHECK = t;
+  SW_REG.update().catch(()=>{});
+}
+function initSW(){
+  if(!('serviceWorker' in navigator) || location.protocol === 'file:') return;
+  navigator.serviceWorker.addEventListener('controllerchange', ()=>{
+    if(SW_ACCEPTED){ SW_ACCEPTED = false; location.reload(); }
+  });
+  navigator.serviceWorker.register('sw.js').then(reg=>{
+    SW_REG = reg; SW_LAST_CHECK = Date.now();
+    if(reg.waiting && navigator.serviceWorker.controller) showUpdateBanner(reg.waiting);
+    reg.addEventListener('updatefound', ()=>watchInstalling(reg));
+    watchInstalling(reg);
+  }).catch(err=>{ console.warn('Service Worker nicht registriert:', err && err.message); });
+}
+async function swInfo(){
+  if(!('serviceWorker' in navigator)) return {state:'vom Browser nicht unterstützt', cache:null};
+  let reg = null;
+  try{ reg = await navigator.serviceWorker.getRegistration(); }catch(e){}
+  let cache = null;
+  try{
+    const keys = await caches.keys();
+    const k = keys.filter(x=>x.indexOf('verdauung-')===0).sort().pop();
+    if(k) cache = k.replace('verdauung-','');
+  }catch(e){}
+  const state = navigator.serviceWorker.controller ? 'aktiv'
+              : (reg ? 'registriert, aktiv ab nächstem Start' : 'nicht registriert');
+  return {state:state, cache:cache};
+}
+
 /* ---------- Start ---------- */
 document.addEventListener('visibilitychange', ()=>{
   if(document.hidden) return;
   const t = dateKey(new Date());
   if(viewDay === renderedToday && t !== renderedToday) viewDay = t;   // über Mitternacht hinweg
   renderedToday = t;
+  swCheck();
   if($('#v-home').classList.contains('on')) renderHome();
 });
 (async function init(){
@@ -1336,6 +1402,7 @@ document.addEventListener('visibilitychange', ()=>{
     history.replaceState({},'',location.hash||'');
     viewDay = dateKey(new Date());
     await renderHome();
+    initSW();
     window.__ready = true;
   }catch(e){
     document.body.insertAdjacentHTML('afterbegin',
