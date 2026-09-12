@@ -266,6 +266,13 @@ details .in{padding:0 14px 14px}
    Teil 1: Konstanten, Hilfsfunktionen, IndexedDB
    ============================================================ */
 'use strict';
+/* ===========================================================================
+   RELEASE-REGEL: Bei JEDER Änderung an dieser Datei APP_VERSION hochziehen
+   UND in sw.js (Zeile 9) VERSION auf exakt denselben Wert setzen.
+   Nur eine geänderte sw.js löst beim Browser ein Update aus — bleibt sie
+   gleich, siehst du auf dem iPhone ewig die alte Fassung.
+   Kontrolle danach: Info → Offline-Cache zeigt dieselbe Nummer, keine Warnung.
+   =========================================================================== */
 const APP_VERSION = '1.1.0';
 const DB_NAME = 'verdauungstagebuch';
 const DB_VERSION = 1;
