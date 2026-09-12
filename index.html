@@ -1,24 +1,1347 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de-CH">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Verdauungstagebuch</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Tagebuch">
-<meta name="theme-color" content="#1c1c1e">
-<title>Tagebuch</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Verdauung">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#f4f5f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16181c" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<link rel="icon" href="data:image/png;base64,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">
 <style>
-  html,body{margin:0;height:100%;background:#1c1c1e;color:#f2f2f7;box-sizing:border-box;
-    font:600 20px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    display:flex;align-items:center;justify-content:center;text-align:center;
-    padding:env(safe-area-inset-top) 24px env(safe-area-inset-bottom)}
-  small{display:block;margin-top:14px;font-weight:400;font-size:15px;opacity:.55}
+:root{
+  --bg:#f4f5f7; --card:#ffffff; --card2:#fafafb; --fg:#16181c; --fg2:#5c6270; --line:#dfe2e8;
+  --accent:#1f7a68; --accent-fg:#ffffff;
+  --essen:#1f7a68; --stuhl:#8a5a2b; --tag:#3f5aa6;
+  --warn:#8a5a00; --warnbg:#fff6e0; --danger:#a32020;
+  --chipbg:#eef0f4; --chipsel:#1f7a68; --r:14px;
+  --safeb:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#16181c; --card:#22252b; --card2:#1c1f24; --fg:#eceef2; --fg2:#a0a6b2; --line:#33373f;
+    --accent:#3fb39a; --accent-fg:#0d1b18;
+    --essen:#3fb39a; --stuhl:#c8935a; --tag:#8aa0e0;
+    --warn:#ffcf70; --warnbg:#3a2f12; --danger:#ff7b7b;
+    --chipbg:#2d3138; --chipsel:#3fb39a;
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--fg);
+  font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  padding-bottom:calc(var(--safeb) + 8px);
+  overscroll-behavior-y:contain;
+}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:none;padding:0;margin:0}
+input,textarea,select{
+  background:var(--card); color:var(--fg); border:1px solid var(--line);
+  border-radius:10px; padding:11px 12px; width:100%; font-size:16px;
+}
+textarea{min-height:74px;resize:vertical}
+h1,h2,h3{margin:0}
+.hidden{display:none!important}
+
+/* ---------- Kopf ---------- */
+header{
+  position:sticky; top:0; z-index:20; background:var(--bg);
+  padding:calc(env(safe-area-inset-top,0px) + 10px) 14px 8px;
+  display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--line);
+}
+header .ttl{font-size:17px;font-weight:650;letter-spacing:-.2px}
+header .ver{font-size:12px;color:var(--fg2);font-variant-numeric:tabular-nums}
+header .sp{flex:1}
+.hbtn{
+  padding:7px 12px; border-radius:10px; background:var(--card); border:1px solid var(--line);
+  font-size:15px; font-weight:550; min-height:38px;
+}
+.hbtn.prim{background:var(--accent);color:var(--accent-fg);border-color:transparent}
+.hbtn.lnk{background:none;border:none;color:var(--accent);padding:7px 4px}
+main{padding:14px 14px 28px;max-width:640px;margin:0 auto}
+.view{display:none}
+.view.on{display:block}
+
+/* ---------- Startscreen ---------- */
+.banner{
+  background:var(--warnbg); color:var(--warn); border:1px solid currentColor;
+  border-radius:var(--r); padding:12px 14px; margin-bottom:14px; font-size:14.5px;
+  display:flex; gap:10px; align-items:center;
+}
+.banner b{font-weight:650}
+.banner button{margin-left:auto;color:inherit;text-decoration:underline;font-weight:600;white-space:nowrap}
+.big{
+  display:flex; align-items:center; gap:14px; width:100%; text-align:left;
+  background:var(--card); border:1px solid var(--line); border-radius:18px;
+  padding:18px 18px; margin-bottom:12px; min-height:84px;
+  box-shadow:0 1px 2px rgba(0,0,0,.04);
+}
+.big:active{transform:scale(.99)}
+.big .ic{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;flex:0 0 auto;color:#fff}
+.big .ic svg{width:26px;height:26px}
+.big .tx{flex:1;min-width:0}
+.big .tx b{display:block;font-size:19px;font-weight:650;letter-spacing:-.3px}
+.big .tx span{display:block;font-size:13.5px;color:var(--fg2);margin-top:1px}
+.big .ar{color:var(--fg2);font-size:22px}
+.ic-essen{background:var(--essen)} .ic-stuhl{background:var(--stuhl)} .ic-tag{background:var(--tag)}
+
+.daynav{display:flex;align-items:center;gap:8px;margin:22px 0 10px}
+.daynav h2{font-size:15px;font-weight:650;flex:1;text-align:center}
+.daynav button{width:40px;height:40px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-size:18px}
+.daynav button[disabled]{opacity:.35}
+.list{display:flex;flex-direction:column;gap:8px}
+.item{
+  display:flex;gap:12px;align-items:flex-start;background:var(--card);
+  border:1px solid var(--line);border-radius:var(--r);padding:12px 13px;width:100%;text-align:left;
+}
+.item .t{font-variant-numeric:tabular-nums;font-weight:650;font-size:14px;min-width:44px;color:var(--fg2)}
+.item .b{flex:1;min-width:0}
+.item .b b{display:block;font-size:15px;font-weight:600}
+.item .b span{display:block;font-size:13.5px;color:var(--fg2);margin-top:2px;word-break:break-word}
+.item .dot{width:8px;height:8px;border-radius:50%;margin-top:6px;flex:0 0 auto}
+.empty{color:var(--fg2);font-size:14.5px;text-align:center;padding:22px 10px;border:1px dashed var(--line);border-radius:var(--r)}
+.footnav{display:flex;gap:8px;margin-top:24px}
+.footnav button{flex:1;padding:12px 6px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-size:14px;font-weight:550}
+
+/* ---------- Formulare ---------- */
+.fld{margin-bottom:20px}
+.fld>label,.lbl{display:block;font-size:13px;font-weight:650;text-transform:uppercase;letter-spacing:.4px;color:var(--fg2);margin-bottom:8px}
+.row{display:flex;gap:8px;align-items:center}
+.row>input{flex:1}
+.hint{font-size:12.5px;color:var(--fg2);margin-top:6px}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{
+  padding:9px 13px;border-radius:999px;background:var(--chipbg);border:1px solid transparent;
+  font-size:15px;line-height:1.2;min-height:40px;
+}
+.chip[aria-pressed=true]{background:var(--chipsel);color:var(--accent-fg);font-weight:600}
+.chip.x{padding-right:9px}
+.chip .rm{margin-left:7px;opacity:.75;font-weight:700}
+.seg{display:flex;gap:6px}
+.seg button{
+  flex:1;padding:11px 4px;border-radius:11px;background:var(--chipbg);border:1px solid transparent;
+  font-size:15px;min-height:46px;text-align:center;
+}
+.seg button[aria-pressed=true]{background:var(--chipsel);color:var(--accent-fg);font-weight:650}
+.seg.s4 button{display:flex;flex-direction:column;gap:2px;justify-content:center;line-height:1.15}
+.seg.s4 b{font-size:16px;font-weight:700}
+.seg.s4 i{font-style:normal;font-size:11px;opacity:.85;hyphens:auto}
+.boolrow{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.boolrow .lbl{margin:0;flex:1;text-transform:none;letter-spacing:0;font-size:15.5px;font-weight:500;color:var(--fg)}
+.boolrow .seg{width:132px;flex:0 0 auto}
+details{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:8px;overflow:hidden}
+details>summary{padding:12px 14px;font-size:15px;font-weight:600;cursor:pointer;list-style:none;display:flex;align-items:center}
+details>summary::-webkit-details-marker{display:none}
+details>summary::after{content:"+";margin-left:auto;color:var(--fg2);font-size:19px}
+details[open]>summary::after{content:"–"}
+details>summary .cnt{margin-left:8px;font-size:12px;background:var(--chipsel);color:var(--accent-fg);border-radius:999px;padding:1px 7px;font-weight:700}
+details .in{padding:0 14px 14px}
+.sel{background:var(--card2);border:1px dashed var(--line);border-radius:12px;padding:10px;margin-bottom:10px}
+.sel .none{font-size:13.5px;color:var(--fg2)}
+
+/* Bristol */
+.bristol{display:flex;flex-direction:column;gap:7px}
+.bri{
+  display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:12px;
+  background:var(--chipbg);border:2px solid transparent;text-align:left;min-height:56px;
+}
+.bri svg{width:62px;height:34px;flex:0 0 auto}
+.bri .n{font-weight:800;font-size:17px;width:16px;flex:0 0 auto}
+.bri .l{flex:1;min-width:0}
+.bri .l b{display:block;font-size:15px;font-weight:600}
+.bri .l span{display:block;font-size:12px;color:var(--fg2)}
+.bri[aria-pressed=true]{border-color:var(--accent);background:var(--card)}
+.bri[aria-pressed=true] .l b{color:var(--accent)}
+.g-hart{color:#9a6a1f} .g-norm{color:#1f7a68} .g-weich{color:#a3502a}
+@media (prefers-color-scheme:dark){.g-hart{color:#d6a34e}.g-norm{color:#3fb39a}.g-weich{color:#e08a5c}}
+
+/* Speicherleiste */
+.savebar{
+  position:sticky;bottom:0;z-index:15;background:linear-gradient(to top,var(--bg) 62%,transparent);
+  padding:12px 0 calc(var(--safeb) + 6px);margin-top:6px;display:flex;gap:8px;
+}
+.savebar .save{flex:1;background:var(--accent);color:var(--accent-fg);border-radius:14px;padding:15px;font-size:17px;font-weight:650}
+.savebar .del{width:56px;border-radius:14px;background:var(--card);border:1px solid var(--line);color:var(--danger);font-size:19px}
+.btn{display:block;width:100%;padding:14px;border-radius:13px;background:var(--card);border:1px solid var(--line);font-size:16px;font-weight:550;margin-bottom:9px;text-align:center}
+.btn.prim{background:var(--accent);color:var(--accent-fg);border-color:transparent;font-weight:650}
+.btn.dgr{color:var(--danger)}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:15px}
+.kv span{color:var(--fg2);text-align:right}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:14px}
+.card h3{font-size:15px;font-weight:650;margin-bottom:8px}
+.card p{margin:0 0 8px;font-size:14px;color:var(--fg2)}
+.leg{font-size:13.5px;color:var(--fg2);line-height:1.6}
+.leg b{color:var(--fg);font-weight:600}
+
+/* Toast + Dialog */
+#toast{
+  position:fixed;left:50%;bottom:calc(var(--safeb) + 22px);transform:translateX(-50%) translateY(20px);
+  background:#000;color:#fff;padding:12px 18px;border-radius:999px;font-size:15px;font-weight:550;
+  opacity:0;pointer-events:none;transition:.22s;z-index:60;max-width:90vw;text-align:center;
+}
+#toast.on{opacity:.94;transform:translateX(-50%) translateY(0)}
+@media (prefers-color-scheme:dark){#toast{background:#f2f3f5;color:#111}}
+#dlg{position:fixed;inset:0;z-index:70;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(0,0,0,.45)}
+#dlg.on{display:flex}
+#dlg .box{background:var(--card);border-radius:18px;padding:20px;max-width:400px;width:100%}
+#dlg h3{font-size:17px;font-weight:650;margin-bottom:8px}
+#dlg p{font-size:14.5px;color:var(--fg2);margin:0 0 16px;white-space:pre-line}
+#dlg .btns{display:flex;gap:8px}
+#dlg .btns button{flex:1;padding:13px;border-radius:12px;font-size:16px;font-weight:600;background:var(--chipbg)}
+#dlg .btns .ok{background:var(--accent);color:var(--accent-fg)}
+#dlg .btns .ok.dgr{background:var(--danger);color:#fff}
 </style>
 </head>
 <body>
-<div>Setup OK
-  <small>Platzhalter v0 &middot; wird durch die Tagebuch-App ersetzt</small>
-</div>
+
+<header>
+  <div>
+    <div class="ttl">Verdauungstagebuch</div>
+    <div class="ver" id="verline">v0.0.0</div>
+  </div>
+  <div class="sp"></div>
+  <button class="hbtn lnk" id="hLeft"></button>
+  <button class="hbtn prim hidden" id="hRight"></button>
+</header>
+
+<main>
+  <!-- Startscreen -->
+  <section class="view on" id="v-home">
+    <div class="banner hidden" id="backupBanner"></div>
+    <button class="big" data-go="essen">
+      <div class="ic ic-essen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 3v8a2 2 0 0 0 4 0V3M7 11v10"/><path d="M17 3c2 1.5 2.5 3.5 2 6-.3 1.5-1 2-2 2s-1.7-.5-2-2c-.5-2.5 0-4.5 2-6z"/><path d="M17 11v10"/></svg></div>
+      <div class="tx"><b>Essen</b><span>Mahlzeit, Getränke, Zubereitung</span></div>
+      <div class="ar">›</div>
+    </button>
+    <button class="big" data-go="stuhl">
+      <div class="ic ic-stuhl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 17h16"/><ellipse cx="12" cy="17" rx="8" ry="3.4"/><path d="M7 12.5c1.2-1 2-1 3.2 0 1.2 1 2 1 3.2 0 1.2-1 2-1 3.2 0"/><path d="M8 8c1-.8 1.7-.8 2.7 0 1 .8 1.7.8 2.7 0 1-.8 1.7-.8 2.7 0"/></svg></div>
+      <div class="tx"><b>Stuhl</b><span>Bristol, Dringlichkeit, Schmerz</span></div>
+      <div class="ar">›</div>
+    </button>
+    <button class="big" data-go="tag">
+      <div class="ic ic-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="4.5" width="17" height="16" rx="3"/><path d="M8 3v3M16 3v3M3.5 10h17M8 14h3M8 17.5h6"/></svg></div>
+      <div class="tx"><b>Tagesabschluss</b><span>Befinden, Schlaf, Besonderes</span></div>
+      <div class="ar">›</div>
+    </button>
+
+    <div class="daynav">
+      <button id="dPrev" aria-label="Vorheriger Tag">‹</button>
+      <h2 id="dTitle">Heute</h2>
+      <button id="dNext" aria-label="Nächster Tag">›</button>
+    </div>
+    <div class="list" id="entryList"></div>
+
+    <div class="footnav">
+      <button data-go="export">Export</button>
+      <button data-go="chips">Chips</button>
+      <button data-go="info">Info</button>
+    </div>
+  </section>
+
+  <!-- Formulare -->
+  <section class="view" id="v-essen"><div id="f-essen"></div></section>
+  <section class="view" id="v-stuhl"><div id="f-stuhl"></div></section>
+  <section class="view" id="v-tag"><div id="f-tag"></div></section>
+  <section class="view" id="v-export"><div id="f-export"></div></section>
+  <section class="view" id="v-chips"><div id="f-chips"></div></section>
+  <section class="view" id="v-info"><div id="f-info"></div></section>
+</main>
+
+<div id="toast"></div>
+<div id="dlg"><div class="box">
+  <h3 id="dlgT"></h3><p id="dlgM"></p>
+  <div class="btns"><button id="dlgC">Abbrechen</button><button class="ok" id="dlgO">OK</button></div>
+</div></div>
+
+<script>
+/* ============================================================
+   Verdauungstagebuch — Single-File-PWA, keine Abhängigkeiten
+   Teil 1: Konstanten, Hilfsfunktionen, IndexedDB
+   ============================================================ */
+'use strict';
+const APP_VERSION = '1.0.0';
+const DB_NAME = 'verdauungstagebuch';
+const DB_VERSION = 1;
+const STORES = ['essen','stuhl','tag','meta'];
+
+/* ---- Skalen (immer ordinal 0–3) ---- */
+const SC = {
+  standard:   ['keine','leicht','mittel','stark'],
+  dringlich:  ['keine','leicht','musste eilen','kaum zu halten'],
+  geruch:     ['normal','leicht','stark','extrem'],
+  energie:    ['sehr tief','tief','gut','sehr gut'],
+  stress:     ['keiner','leicht','mittel','stark'],
+  schlafqual: ['schlecht','mässig','gut','sehr gut']
+};
+
+const MAHLZEIT = ['Frühstück','Zwischenverpflegung','Mittagessen','Zvieri','Abendessen','Spätmahlzeit','Nur Getränk'];
+const ZUBEREITUNG = ['roh','gekocht','gebraten','frittiert'];
+const STUHLFARBE = ['braun','hellbraun','dunkelbraun','gelblich','grünlich','grau/lehmfarben','schwarz','rötlich'];
+const BRISTOL = [
+  [1,'Harte Klümpchen','einzeln, schwer auszuscheiden','g-hart'],
+  [2,'Wurst, klumpig','hart, höckerig','g-hart'],
+  [3,'Wurst mit Rissen','an der Oberfläche','g-norm'],
+  [4,'Wurst, glatt & weich','Idealform','g-norm'],
+  [5,'Weiche Klümpchen','klare Ränder','g-weich'],
+  [6,'Breiig','flockig, fetzige Ränder','g-weich'],
+  [7,'Flüssig','ohne feste Teile','g-weich']
+];
+
+/* ---- Schweizer Startliste (in der App editierbar) ---- */
+const DEFAULT_CHIPS = {
+  essen: {
+    'Brot & Getreide':['Ruchbrot','Vollkornbrot','Weissbrot','Gipfeli','Zopf','Knäckebrot','Haferflocken','Birchermüesli','Müesli','Cornflakes','Teigwaren','Vollkorn-Teigwaren','Reis','Polenta','Kartoffeln','Rösti','Spätzli','Älplermagronen','Couscous','Quinoa'],
+    'Milchprodukte':['Milch','Kaffeerahm','Joghurt nature','Joghurt gesüsst','Quark','Hüttenkäse','Gruyère','Emmentaler','Mozzarella','Frischkäse','Butter','Raclette','Fondue','Schlagrahm','Halbfettkäse'],
+    'Gemüse':['Rüebli','Zucchetti','Broccoli','Blumenkohl','Kabis','Randen','Fenchel','Lauch','Zwiebeln','Knoblauch','Tomaten','Gurke','Blattsalat','Spinat','Pilze','Peperoni','Sellerie','Erbsen','Bohnen','Spargeln','Kürbis','Sauerkraut','Avocado'],
+    'Früchte':['Apfel','Banane','Birne','Orange','Beeren','Trauben','Kiwi','Melone','Pfirsich','Zwetschgen','Dörrfrüchte','Zitrone','Ananas'],
+    'Fleisch, Fisch & Ei':['Poulet','Rindfleisch','Schweinefleisch','Hackfleisch','Cervelat','Wienerli','Fleischkäse','Landjäger','Trockenfleisch','Schinken','Speck','Salami','Lachs','Thon','Fisch weiss','Eier'],
+    'Hülsenfrüchte & Nüsse':['Linsen','Kichererbsen','Bohnen aus Dose','Tofu','Hummus','Baumnüsse','Mandeln','Haselnüsse','Cashew','Erdnüsse','Kerne & Samen'],
+    'Fett, Sauce & Würze':['Olivenöl','Rapsöl','Mayonnaise','Ketchup','Senf','Salatsauce','Bouillon','Aromat','Sojasauce','Pesto','Scharfes/Chili','Zwiebelsauce'],
+    'Süsses & Snacks':['Schokolade','Guetzli','Kuchen','Glace','Honig','Konfitüre','Chips','Salzstängeli','Nussgipfel','Zucker im Kaffee'],
+    'Fertig & Auswärts':['Pizza','Sandwich','Take-away','Kantine','Restaurant','Fertiggericht','Dosensuppe','Pommes frites','Kebab','Burger','Sushi']
+  },
+  getraenke:['Hahnenwasser','Mineral mit Gas','Mineral ohne Gas','Kaffee','Espresso','Milchkaffee','Schwarztee','Grüntee','Kräutertee','Pfefferminztee','Fencheltee','Rivella','Cola','Cola Zero','Süssgetränk','Orangensaft','Apfelsaft','Bier','Wein rot','Wein weiss','Spirituosen','Ovomaltine','Sirup','Proteinshake'],
+  sport:['Spaziergang','Joggen','Velo','Kraft','Schwimmen','Wandern','Yoga','Fussball','Ski','Nichts'],
+  medikamente:['Keine','Vitamin D','Magnesium','Probiotika','Schmerzmittel','Antibiotika','Magenschutz/PPI','Abführmittel','Flohsamen','Eisen','Antihistaminikum']
+};
+
+/* ---- Hilfsfunktionen ---- */
+const $ = s => document.querySelector(s);
+const pad = n => String(n).padStart(2,'0');
+function offsetStr(d){
+  const o = -d.getTimezoneOffset(), s = o>=0?'+':'-', a = Math.abs(o);
+  return s + pad(Math.floor(a/60)) + ':' + pad(a%60);
+}
+/* ISO 8601 mit lokalem Offset, z.B. 2026-09-12T07:45:00+02:00 */
+function toISO(d){
+  return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+
+         pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds())+offsetStr(d);
+}
+const dateKey = d => d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const toLocalInput = d => dateKey(d)+'T'+pad(d.getHours())+':'+pad(d.getMinutes());
+function fromLocalInput(s){
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(s||'');
+  if(!m) return new Date();
+  return new Date(+m[1], +m[2]-1, +m[3], +m[4], +m[5], 0, 0);
+}
+function fromDateKey(s){
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s||'');
+  return m ? new Date(+m[1], +m[2]-1, +m[3]) : new Date();
+}
+const isoTime = iso => (iso||'').slice(11,16);            // HH:MM wie erfasst
+const isoDate = iso => (iso||'').slice(0,10);
+const uid = () => Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);
+const nz = v => (v==null||v==='') ? '–' : v;
+const WD = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+function prettyDay(key){
+  const d = fromDateKey(key), t = dateKey(new Date());
+  const y = dateKey(new Date(Date.now()-864e5));
+  const base = WD[d.getDay()]+' '+pad(d.getDate())+'.'+pad(d.getMonth()+1)+'.'+d.getFullYear();
+  if(key===t) return 'Heute · '+base;
+  if(key===y) return 'Gestern · '+base;
+  return base;
+}
+function daysBetween(aKey,bKey){
+  return Math.round((fromDateKey(bKey)-fromDateKey(aKey))/864e5);
+}
+function toast(msg,ms){
+  const t = $('#toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(toast._h); toast._h = setTimeout(()=>t.classList.remove('on'), ms||2000);
+}
+function confirmBox(title,msg,okLabel,danger){
+  return new Promise(res=>{
+    $('#dlgT').textContent = title; $('#dlgM').textContent = msg||'';
+    $('#dlgO').textContent = okLabel||'OK';
+    $('#dlgO').className = 'ok'+(danger?' dgr':'');
+    $('#dlg').classList.add('on');
+    const done = v => { $('#dlg').classList.remove('on'); $('#dlgO').onclick=null; $('#dlgC').onclick=null; res(v); };
+    $('#dlgO').onclick = ()=>done(true);
+    $('#dlgC').onclick = ()=>done(false);
+  });
+}
+function el(tag, attrs, html){
+  const n = document.createElement(tag);
+  if(attrs) for(const k in attrs){
+    if(k==='class') n.className = attrs[k];
+    else if(k==='text') n.textContent = attrs[k];
+    else if(attrs[k]!=null) n.setAttribute(k, attrs[k]);
+  }
+  if(html!=null) n.innerHTML = html;
+  return n;
+}
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---- IndexedDB ---- */
+let _db = null;
+function db(){
+  if(_db) return Promise.resolve(_db);
+  return new Promise((res,rej)=>{
+    const r = indexedDB.open(DB_NAME, DB_VERSION);
+    r.onupgradeneeded = () => {
+      const d = r.result;
+      if(!d.objectStoreNames.contains('essen')){
+        const s = d.createObjectStore('essen',{keyPath:'id'}); s.createIndex('datum','datum');
+      }
+      if(!d.objectStoreNames.contains('stuhl')){
+        const s = d.createObjectStore('stuhl',{keyPath:'id'}); s.createIndex('datum','datum');
+      }
+      if(!d.objectStoreNames.contains('tag')) d.createObjectStore('tag',{keyPath:'datum'});
+      if(!d.objectStoreNames.contains('meta')) d.createObjectStore('meta',{keyPath:'k'});
+    };
+    r.onsuccess = () => { _db = r.result; res(_db); };
+    r.onerror = () => rej(r.error);
+  });
+}
+function txDone(t){ return new Promise((res,rej)=>{ t.oncomplete=()=>res(); t.onerror=()=>rej(t.error); t.onabort=()=>rej(t.error); }); }
+async function dbPut(store,obj){
+  const d = await db(), t = d.transaction(store,'readwrite');
+  t.objectStore(store).put(obj); await txDone(t); return obj;
+}
+async function dbPutMany(store,arr){
+  if(!arr.length) return 0;
+  const d = await db(), t = d.transaction(store,'readwrite'), s = t.objectStore(store);
+  arr.forEach(o=>s.put(o)); await txDone(t); return arr.length;
+}
+async function dbAll(store){
+  const d = await db();
+  return new Promise((res,rej)=>{
+    const q = d.transaction(store,'readonly').objectStore(store).getAll();
+    q.onsuccess = ()=>res(q.result||[]); q.onerror = ()=>rej(q.error);
+  });
+}
+async function dbGet(store,key){
+  const d = await db();
+  return new Promise((res,rej)=>{
+    const q = d.transaction(store,'readonly').objectStore(store).get(key);
+    q.onsuccess = ()=>res(q.result||null); q.onerror = ()=>rej(q.error);
+  });
+}
+async function dbDel(store,key){
+  const d = await db(), t = d.transaction(store,'readwrite');
+  t.objectStore(store).delete(key); await txDone(t);
+}
+async function dbClear(store){
+  const d = await db(), t = d.transaction(store,'readwrite');
+  t.objectStore(store).clear(); await txDone(t);
+}
+async function metaGet(k,def){ const r = await dbGet('meta',k); return r ? r.v : def; }
+async function metaSet(k,v){ return dbPut('meta',{k:k,v:v}); }
+
+/* ---- Zustand ---- */
+let CHIPS = null;            // editierbare Chip-Listen
+let SETTINGS = {sep:';'};    // CSV-Trennzeichen
+let viewDay = dateKey(new Date());
+let cur = null;              // Datensatz in Bearbeitung
+let curType = null;
+let viewStack = [];
+let renderedToday = null;
+
+/* ============================================================
+   Teil 2: Navigation, Startscreen, UI-Bausteine
+   ============================================================ */
+const VIEWS = ['home','essen','stuhl','tag','export','chips','info'];
+const TITLES = {essen:'Essen', stuhl:'Stuhl', tag:'Tagesabschluss', export:'Export & Backup', chips:'Chips verwalten', info:'Info & Legende'};
+
+function setView(v){
+  VIEWS.forEach(x => $('#v-'+x).classList.toggle('on', x===v));
+  const hl = $('#hLeft'), hr = $('#hRight');
+  if(v==='home'){
+    hl.textContent = ''; hl.classList.add('hidden'); hr.classList.add('hidden');
+    $('#verline').textContent = 'v'+APP_VERSION;
+  } else {
+    hl.textContent = '‹ Zurück'; hl.classList.remove('hidden'); hr.classList.add('hidden');
+    $('#verline').textContent = TITLES[v] || '';
+  }
+  window.scrollTo(0,0);
+}
+function nav(v, opts){
+  opts = opts || {};
+  if(v!=='home'){ viewStack.push('home'); history.pushState({v:v},'',location.hash||''); }
+  if(v==='essen') openEssen(opts.rec);
+  else if(v==='stuhl') openStuhl(opts.rec);
+  else if(v==='tag') openTag(opts.datum);
+  else if(v==='export') openExport();
+  else if(v==='chips') openChips();
+  else if(v==='info') openInfo();
+  setView(v);
+}
+function goHome(){ cur=null; curType=null; setView('home'); renderHome(); }
+window.addEventListener('popstate', ()=>{ goHome(); });
+$('#hLeft').onclick = ()=>{ if(history.state && history.state.v) history.back(); else goHome(); };
+
+/* ---- UI-Bausteine ---- */
+/* Chips: multi- oder single-select, schreibt direkt in cur[field] */
+function toggleVal(field, name, multi){
+  if(multi){
+    const a = cur[field] = cur[field]||[];
+    const i = a.indexOf(name);
+    if(i>=0) a.splice(i,1); else a.push(name);
+  } else {
+    cur[field] = (cur[field]===name) ? '' : name;
+  }
+}
+function syncChips(field, root){
+  (root||document).querySelectorAll('.chip[data-field="'+field+'"]').forEach(c=>{
+    const v = c.dataset.name;
+    const on = Array.isArray(cur[field]) ? cur[field].indexOf(v)>=0 : cur[field]===v;
+    c.setAttribute('aria-pressed', on?'true':'false');
+  });
+}
+function chipsBox(field, list, multi, onChange){
+  const box = el('div',{class:'chips'});
+  list.forEach(name=>{
+    const b = el('button',{type:'button',class:'chip','data-name':name,'data-field':field,'aria-pressed':'false',text:name});
+    b.onclick = ()=>{ toggleVal(field,name,multi); syncChips(field); if(onChange) onChange(); };
+    box.appendChild(b);
+  });
+  syncChips(field, box);
+  return box;
+}
+function chipsField(label, field, list, multi, onChange){
+  const f = el('div',{class:'fld'});
+  f.appendChild(el('label',{text:label}));
+  f.appendChild(chipsBox(field, list, multi, onChange));
+  return f;
+}
+/* Ordinalskala 0–3 */
+function scaleField(label, field, labels){
+  const f = el('div',{class:'fld'});
+  f.appendChild(el('label',{text:label}));
+  const seg = el('div',{class:'seg s4'});
+  for(let i=0;i<4;i++){
+    const b = el('button',{type:'button','aria-pressed': cur[field]===i?'true':'false'},
+      '<b>'+i+'</b><i>'+esc(labels[i])+'</i>');
+    b.onclick = ()=>{ cur[field]=i; seg.querySelectorAll('button').forEach((x,j)=>x.setAttribute('aria-pressed', j===i?'true':'false')); };
+    seg.appendChild(b);
+  }
+  f.appendChild(seg);
+  return f;
+}
+/* Ja/Nein-Zeile */
+function boolRow(label, field){
+  const r = el('div',{class:'boolrow'});
+  r.appendChild(el('div',{class:'lbl',text:label}));
+  const seg = el('div',{class:'seg'});
+  [['Nein',false],['Ja',true]].forEach(([t,v])=>{
+    const b = el('button',{type:'button',text:t,'aria-pressed': cur[field]===v?'true':'false'});
+    b.onclick = ()=>{ cur[field]=v; seg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', (x.textContent==='Ja')===v?'true':'false')); };
+    seg.appendChild(b);
+  });
+  r.appendChild(seg);
+  return r;
+}
+function textField(label, field, ph, rows){
+  const f = el('div',{class:'fld'});
+  f.appendChild(el('label',{text:label}));
+  /* ID pro Formular eindeutig — alle Views liegen gleichzeitig im DOM */
+  const t = el('textarea',{id:'tf-'+curType+'-'+field, placeholder:ph||'', rows:rows||3});
+  t.value = cur[field]||'';
+  t.oninput = ()=>{ cur[field]=t.value; };
+  f.appendChild(t);
+  return f;
+}
+/* Zeitfeld mit "Jetzt" */
+function timeField(label, dateObj, onSet){
+  const f = el('div',{class:'fld'});
+  f.appendChild(el('label',{text:label}));
+  const row = el('div',{class:'row'});
+  const inp = el('input',{type:'datetime-local',id:'tsInput-'+curType});
+  inp.value = toLocalInput(dateObj);
+  inp.onchange = ()=>{ if(onSet) onSet(fromLocalInput(inp.value)); };
+  const now = el('button',{type:'button',class:'hbtn',text:'Jetzt'});
+  now.onclick = ()=>{ const d=new Date(); inp.value = toLocalInput(d); if(onSet) onSet(d); };
+  row.appendChild(inp); row.appendChild(now);
+  f.appendChild(row);
+  return f;
+}
+/* Bristol-Grafik */
+function bristolSvg(n){
+  const c = 'currentColor';
+  if(n===1) return '<svg viewBox="0 0 62 34" fill="'+c+'"><circle cx="10" cy="20" r="4.2"/><circle cx="22" cy="12" r="3.6"/><circle cx="32" cy="22" r="4.4"/><circle cx="43" cy="13" r="3.4"/><circle cx="52" cy="21" r="4"/></svg>';
+  if(n===2) return '<svg viewBox="0 0 62 34" fill="'+c+'"><circle cx="14" cy="17" r="9"/><circle cx="25" cy="15" r="10"/><circle cx="37" cy="18" r="9.5"/><circle cx="48" cy="16" r="8.5"/></svg>';
+  if(n===3) return '<svg viewBox="0 0 62 34"><rect x="5" y="10" width="52" height="15" rx="7.5" fill="'+c+'"/><g stroke="var(--card)" stroke-width="2.2" stroke-linecap="round"><path d="M18 11.5v12"/><path d="M30 11.5v12"/><path d="M42 11.5v12"/></g></svg>';
+  if(n===4) return '<svg viewBox="0 0 62 34"><rect x="4" y="11" width="54" height="13" rx="6.5" fill="'+c+'"/></svg>';
+  if(n===5) return '<svg viewBox="0 0 62 34" fill="'+c+'"><ellipse cx="14" cy="19" rx="9" ry="6.5"/><ellipse cx="32" cy="21" rx="8" ry="6"/><ellipse cx="48" cy="15" rx="8.5" ry="6.5"/></svg>';
+  if(n===6) return '<svg viewBox="0 0 62 34" fill="'+c+'"><circle cx="12" cy="19" r="6.5"/><circle cx="21" cy="13" r="5.5"/><circle cx="28" cy="21" r="7"/><circle cx="37" cy="14" r="6"/><circle cx="44" cy="21" r="6.5"/><circle cx="52" cy="15" r="5"/><circle cx="17" cy="24" r="4"/><circle cx="47" cy="25" r="3.5"/></svg>';
+  return '<svg viewBox="0 0 62 34"><ellipse cx="31" cy="21" rx="26" ry="7" fill="'+c+'"/><path d="M6 13c5-4 10 4 15 0s10 4 15 0 10 4 15 0" stroke="'+c+'" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".7"/></svg>';
+}
+function bristolField(){
+  const f = el('div',{class:'fld'});
+  f.appendChild(el('label',{text:'Bristol-Typ'}));
+  const box = el('div',{class:'bristol'});
+  BRISTOL.forEach(([n,t,s,g])=>{
+    const b = el('button',{type:'button',class:'bri','data-n':n,'aria-pressed': cur.bristol===n?'true':'false'},
+      '<span class="n '+g+'">'+n+'</span><span class="'+g+'">'+bristolSvg(n)+'</span>'+
+      '<span class="l"><b>'+esc(t)+'</b><span>'+esc(s)+'</span></span>');
+    b.onclick = ()=>{ cur.bristol=n; box.querySelectorAll('.bri').forEach(x=>x.setAttribute('aria-pressed', +x.dataset.n===n?'true':'false')); };
+    box.appendChild(b);
+  });
+  f.appendChild(box);
+  f.appendChild(el('div',{class:'hint',text:'1–2 hart · 3–4 normal · 5–7 weich bis flüssig'}));
+  return f;
+}
+/* Kopfzeile im Formular + Speicherleiste */
+function formHead(title, sub){
+  const d = el('div',{class:'fld'});
+  d.appendChild(el('h1',{style:'font-size:24px;font-weight:700;letter-spacing:-.5px',text:title}));
+  if(sub) d.appendChild(el('div',{class:'hint',text:sub}));
+  return d;
+}
+function saveBar(onSave, onDelete){
+  const b = el('div',{class:'savebar'});
+  const s = el('button',{type:'button',class:'save',text:'Speichern'});
+  s.onclick = onSave; b.appendChild(s);
+  if(onDelete){
+    const d = el('button',{type:'button',class:'del',title:'Löschen'},'&#9003;');
+    d.textContent = '🗑';
+    d.onclick = onDelete; b.appendChild(d);
+  }
+  return b;
+}
+
+/* ---- Startscreen ---- */
+async function renderHome(){
+  renderedToday = dateKey(new Date());
+  $('#verline').textContent = 'v'+APP_VERSION;
+  $('#dTitle').textContent = prettyDay(viewDay);
+  $('#dNext').disabled = daysBetween(viewDay, dateKey(new Date())) <= 0;
+
+  const [essen, stuhl, tag] = await Promise.all([dbAll('essen'), dbAll('stuhl'), dbGet('tag',viewDay)]);
+  const list = $('#entryList'); list.innerHTML = '';
+  const rows = [];
+  essen.filter(r=>r.datum===viewDay).forEach(r=>{
+    const parts = [];
+    if(r.items && r.items.length) parts.push(r.items.join(', '));
+    if(r.getraenke && r.getraenke.length) parts.push('Getränk: '+r.getraenke.join(', '));
+    if(r.notiz) parts.push(r.notiz);
+    const flags = [];
+    if(r.kaffee) flags.push('Kaffee'); if(r.alkohol) flags.push('Alkohol'); if(r.suessstoffe) flags.push('Süssstoffe');
+    if(flags.length) parts.push('('+flags.join(', ')+')');
+    rows.push({t:isoTime(r.ts), sort:r.ts, col:'var(--essen)', title:r.typ||'Essen', sub:parts.join(' · '), type:'essen', rec:r});
+  });
+  stuhl.filter(r=>r.datum===viewDay).forEach(r=>{
+    const extra = [];
+    if(r.dringlichkeit) extra.push('Dringlichkeit '+r.dringlichkeit);
+    if(r.schmerz_vorher||r.schmerz_nachher) extra.push('Schmerz '+nz(r.schmerz_vorher)+'/'+nz(r.schmerz_nachher));
+    if(r.blut) extra.push('Blut!'); if(r.schleim) extra.push('Schleim');
+    rows.push({t:isoTime(r.ts), sort:r.ts, col:'var(--stuhl)', title:'Stuhl · Bristol '+(r.bristol||'–'), sub:extra.join(' · '), type:'stuhl', rec:r});
+  });
+  rows.sort((a,b)=> a.sort<b.sort?-1:1);
+
+  if(tag){
+    rows.push({t:'Tag', sort:'~', col:'var(--tag)', title:'Tagesabschluss',
+      sub:'Blähungen '+nz(tag.blaehungen)+' · Bauchschmerz '+nz(tag.bauchschmerz)+' · Energie '+nz(tag.energie)+' · Stress '+nz(tag.stress)+
+          (tag.schlaf_dauer_min!=null? ' · Schlaf '+Math.floor(tag.schlaf_dauer_min/60)+'h'+pad(tag.schlaf_dauer_min%60):''),
+      type:'tag', rec:tag});
+  }
+  if(!rows.length){
+    list.appendChild(el('div',{class:'empty',text: viewDay===dateKey(new Date())
+      ? 'Noch keine Einträge heute.' : 'Keine Einträge an diesem Tag.'}));
+  }
+  rows.forEach(r=>{
+    const b = el('button',{type:'button',class:'item'},
+      '<span class="dot" style="background:'+r.col+'"></span>'+
+      '<span class="t">'+esc(r.t)+'</span>'+
+      '<span class="b"><b>'+esc(r.title)+'</b>'+(r.sub?'<span>'+esc(r.sub)+'</span>':'')+'</span>');
+    b.onclick = ()=>{ if(r.type==='tag') nav('tag',{datum:r.rec.datum}); else nav(r.type,{rec:r.rec}); };
+    list.appendChild(b);
+  });
+  renderBackupBanner(essen.length+stuhl.length);
+}
+async function renderBackupBanner(count){
+  const b = $('#backupBanner');
+  const last = await metaGet('lastBackup', null);
+  const first = await metaGet('firstUse', null);
+  if(!count){ b.classList.add('hidden'); return; }
+  const ref = last || first;
+  const days = ref ? Math.floor((Date.now()-new Date(ref).getTime())/864e5) : 999;
+  if(days < 7){ b.classList.add('hidden'); return; }
+  b.innerHTML = '';
+  b.appendChild(el('div',{},'<b>Backup fällig.</b> '+(last? 'Letztes Backup vor '+days+' Tagen.' : 'Noch kein Backup erstellt.')));
+  const go = el('button',{type:'button',text:'Jetzt sichern'});
+  go.onclick = ()=>nav('export');
+  b.appendChild(go);
+  b.classList.remove('hidden');
+}
+document.querySelectorAll('[data-go]').forEach(b=>{ b.onclick = ()=>nav(b.dataset.go); });
+$('#dPrev').onclick = ()=>{ const d=fromDateKey(viewDay); d.setDate(d.getDate()-1); viewDay=dateKey(d); renderHome(); };
+$('#dNext').onclick = ()=>{ const d=fromDateKey(viewDay); d.setDate(d.getDate()+1); if(daysBetween(dateKey(d),dateKey(new Date()))>=0){ viewDay=dateKey(d); renderHome(); } };
+
+/* ============================================================
+   Teil 3: Formulare Essen / Stuhl / Tagesabschluss, Chip-Verwaltung
+   ============================================================ */
+
+/* ---------- Essen ---------- */
+async function openEssen(rec){
+  curType = 'essen';
+  const now = new Date();
+  cur = rec ? JSON.parse(JSON.stringify(rec)) : {
+    id:uid(), ts:toISO(now), datum:dateKey(now), typ:'', items:[], getraenke:[],
+    zubereitung:[], kaffee:false, alkohol:false, suessstoffe:false, notiz:'',
+    created:toISO(now), updated:toISO(now)
+  };
+  let d = rec ? fromLocalInput(cur.ts.slice(0,16)) : now;
+  if(!rec && cur.typ==='') cur.typ = guessMahlzeit(d);
+
+  const all = await dbAll('essen');
+  const cntItems = {}, cntDrinks = {};
+  all.forEach(r=>{
+    (r.items||[]).forEach(x=>cntItems[x]=(cntItems[x]||0)+1);
+    (r.getraenke||[]).forEach(x=>cntDrinks[x]=(cntDrinks[x]||0)+1);
+  });
+  const top = (c,n)=>Object.keys(c).sort((a,b)=>c[b]-c[a]).slice(0,n);
+
+  const root = $('#f-essen'); root.innerHTML = '';
+  let typTouched = !!rec;
+  root.appendChild(formHead(rec?'Essen bearbeiten':'Essen erfassen'));
+  root.appendChild(timeField('Zeitpunkt', d, nd=>{
+    d = nd; cur.ts = toISO(nd); cur.datum = dateKey(nd);
+    if(!typTouched){ cur.typ = guessMahlzeit(nd); syncChips('typ'); }   // Mahlzeit folgt der Zeit, bis manuell gewählt
+  }));
+  root.appendChild(chipsField('Mahlzeit', 'typ', MAHLZEIT, false, ()=>{ typTouched = true; }));
+
+  /* Auswahl */
+  const selWrap = el('div',{class:'fld'});
+  selWrap.appendChild(el('label',{text:'Gewählt'}));
+  const selBox = el('div',{class:'sel'});
+  selWrap.appendChild(selBox);
+  function renderSel(){
+    selBox.innerHTML = '';
+    const items = (cur.items||[]).concat(cur.getraenke||[]);
+    if(!items.length){ selBox.appendChild(el('div',{class:'none',text:'Noch nichts gewählt — unten antippen.'})); return; }
+    const box = el('div',{class:'chips'});
+    (cur.items||[]).slice().forEach(name=>{
+      const b = el('button',{type:'button',class:'chip x','aria-pressed':'true'}, esc(name)+'<span class="rm">×</span>');
+      b.onclick = ()=>{ toggleVal('items',name,true); syncChips('items'); renderSel(); };
+      box.appendChild(b);
+    });
+    (cur.getraenke||[]).slice().forEach(name=>{
+      const b = el('button',{type:'button',class:'chip x','aria-pressed':'true'}, esc(name)+' <span style="opacity:.7">(Getränk)</span><span class="rm">×</span>');
+      b.onclick = ()=>{ toggleVal('getraenke',name,true); syncChips('getraenke'); renderSel(); };
+      box.appendChild(b);
+    });
+    selBox.appendChild(box);
+  }
+  renderSel();
+  root.appendChild(selWrap);
+
+  /* Suche */
+  const sf = el('div',{class:'fld'});
+  sf.appendChild(el('label',{text:'Lebensmittel suchen'}));
+  const sInp = el('input',{type:'search',placeholder:'z.B. Ruchbrot',autocapitalize:'sentences'});
+  sf.appendChild(sInp);
+  const sRes = el('div',{class:'chips',style:'margin-top:9px'});
+  sf.appendChild(sRes);
+  const allFood = [];
+  Object.keys(CHIPS.essen).forEach(g=>CHIPS.essen[g].forEach(n=>{ if(allFood.indexOf(n)<0) allFood.push(n); }));
+  sInp.oninput = ()=>{
+    const q = sInp.value.trim().toLowerCase();
+    sRes.innerHTML = '';
+    if(q.length < 2) return;
+    const hits = allFood.filter(n=>n.toLowerCase().indexOf(q)>=0).slice(0,30);
+    const dr = CHIPS.getraenke.filter(n=>n.toLowerCase().indexOf(q)>=0).slice(0,10);
+    if(hits.length) sRes.appendChild(chipsBox('items', hits, true, renderSel));
+    if(dr.length) sRes.appendChild(chipsBox('getraenke', dr, true, renderSel));
+    if(!hits.length && !dr.length) sRes.appendChild(el('div',{class:'none',text:'Kein Treffer — unten "Eigenes" verwenden.'}));
+  };
+  root.appendChild(sf);
+
+  /* Häufig + Gruppen */
+  const gWrap = el('div',{class:'fld'});
+  gWrap.appendChild(el('label',{text:'Lebensmittel'}));
+  const tItems = top(cntItems,12);
+  if(tItems.length){
+    const dt = el('details',{open:'open'});
+    dt.appendChild(el('summary',{},'Häufig'));
+    const inn = el('div',{class:'in'});
+    inn.appendChild(chipsBox('items', tItems, true, renderSel));
+    dt.appendChild(inn); gWrap.appendChild(dt);
+  }
+  Object.keys(CHIPS.essen).forEach(g=>{
+    const dt = el('details',{});
+    dt.appendChild(el('summary',{},esc(g)));
+    const inn = el('div',{class:'in'});
+    inn.appendChild(chipsBox('items', CHIPS.essen[g], true, renderSel));
+    dt.appendChild(inn); gWrap.appendChild(dt);
+  });
+  /* Eigenes */
+  const own = el('div',{style:'margin-top:10px'});
+  own.appendChild(el('div',{class:'lbl',text:'Eigenes hinzufügen'}));
+  const oRow = el('div',{class:'row'});
+  const oInp = el('input',{type:'text',placeholder:'Eigenes Lebensmittel'});
+  const oBtn = el('button',{type:'button',class:'hbtn prim',text:'+'});
+  oBtn.style.minWidth = '56px';
+  oBtn.onclick = async ()=>{
+    const v = oInp.value.trim(); if(!v) return;
+    if((cur.items||[]).indexOf(v)<0) (cur.items=cur.items||[]).push(v);
+    if(allFood.indexOf(v)<0){
+      CHIPS.essen['Eigene'] = CHIPS.essen['Eigene']||[];
+      if(CHIPS.essen['Eigene'].indexOf(v)<0) CHIPS.essen['Eigene'].push(v);
+      allFood.push(v); await metaSet('chips', CHIPS);
+      toast('"'+v+'" als Chip gespeichert');
+    }
+    oInp.value = ''; renderSel(); syncChips('items');
+  };
+  oRow.appendChild(oInp); oRow.appendChild(oBtn);
+  own.appendChild(oRow);
+  own.appendChild(el('div',{class:'hint',text:'Wird automatisch zur Gruppe "Eigene" hinzugefügt.'}));
+  gWrap.appendChild(own);
+  root.appendChild(gWrap);
+
+  root.appendChild(chipsField('Zubereitung', 'zubereitung', ZUBEREITUNG, true));
+
+  /* Getränke */
+  const dWrap = el('div',{class:'fld'});
+  dWrap.appendChild(el('label',{text:'Getränke'}));
+  const tDr = top(cntDrinks,8);
+  if(tDr.length){
+    const dt = el('details',{open:'open'});
+    dt.appendChild(el('summary',{},'Häufig'));
+    const inn = el('div',{class:'in'});
+    inn.appendChild(chipsBox('getraenke', tDr, true, renderSel));
+    dt.appendChild(inn); dWrap.appendChild(dt);
+  }
+  const dAll = el('details',{});
+  dAll.appendChild(el('summary',{},'Alle Getränke'));
+  const dInn = el('div',{class:'in'});
+  dInn.appendChild(chipsBox('getraenke', CHIPS.getraenke, true, renderSel));
+  dAll.appendChild(dInn); dWrap.appendChild(dAll);
+  root.appendChild(dWrap);
+
+  const fl = el('div',{class:'fld'});
+  fl.appendChild(el('label',{text:'Flags'}));
+  fl.appendChild(boolRow('Kaffee','kaffee'));
+  fl.appendChild(boolRow('Alkohol','alkohol'));
+  fl.appendChild(boolRow('Süssstoffe','suessstoffe'));
+  root.appendChild(fl);
+
+  root.appendChild(textField('Freitext','notiz','Portionsgrösse, Marke, Details, wie gegessen …'));
+  root.appendChild(saveBar(saveEssen, rec ? ()=>delRec('essen',cur.id) : null));
+}
+function guessMahlzeit(d){
+  const h = d.getHours();
+  if(h<10) return 'Frühstück';
+  if(h<11.5) return 'Zwischenverpflegung';
+  if(h<14) return 'Mittagessen';
+  if(h<17) return 'Zvieri';
+  if(h<21) return 'Abendessen';
+  return 'Spätmahlzeit';
+}
+async function saveEssen(){
+  const iv = $('#tsInput-essen'); if(iv && iv.value){ const d = fromLocalInput(iv.value); cur.ts = toISO(d); cur.datum = dateKey(d); }
+  if(!(cur.items||[]).length && !(cur.getraenke||[]).length && !cur.notiz.trim()){
+    toast('Bitte mindestens ein Lebensmittel, Getränk oder Freitext'); return;
+  }
+  cur.updated = toISO(new Date());
+  await dbPut('essen', cur);
+  toast('Essen gespeichert');
+  viewDay = cur.datum; backOrHome();
+}
+
+/* ---------- Stuhl ---------- */
+async function openStuhl(rec){
+  curType = 'stuhl';
+  const now = new Date();
+  cur = rec ? JSON.parse(JSON.stringify(rec)) : {
+    id:uid(), ts:toISO(now), datum:dateKey(now), bristol:null,
+    dringlichkeit:null, geruch:null, schmerz_vorher:null, schmerz_nachher:null,
+    farbe:'', schwimmt:null, unverdaute_reste:null, schleim:null, blut:null, notiz:'',
+    created:toISO(now), updated:toISO(now)
+  };
+  const d = rec ? fromLocalInput(cur.ts.slice(0,16)) : now;
+
+  const root = $('#f-stuhl'); root.innerHTML = '';
+  root.appendChild(formHead(rec?'Stuhl bearbeiten':'Stuhl erfassen'));
+  root.appendChild(timeField('Zeitpunkt', d, nd=>{ cur.ts=toISO(nd); cur.datum=dateKey(nd); }));
+  root.appendChild(bristolField());
+  root.appendChild(scaleField('Dringlichkeit','dringlichkeit',SC.dringlich));
+  root.appendChild(scaleField('Geruch','geruch',SC.geruch));
+  root.appendChild(scaleField('Schmerz vorher','schmerz_vorher',SC.standard));
+  root.appendChild(scaleField('Schmerz nachher','schmerz_nachher',SC.standard));
+  root.appendChild(chipsField('Farbe','farbe',STUHLFARBE,false));
+  const b = el('div',{class:'fld'});
+  b.appendChild(el('label',{text:'Beobachtungen'}));
+  b.appendChild(boolRow('Schwimmt','schwimmt'));
+  b.appendChild(boolRow('Unverdaute Reste','unverdaute_reste'));
+  b.appendChild(boolRow('Schleim','schleim'));
+  b.appendChild(boolRow('Blut','blut'));
+  root.appendChild(b);
+  root.appendChild(textField('Freitext','notiz','Auffälligkeiten, Zusammenhang mit Mahlzeit …'));
+  root.appendChild(saveBar(saveStuhl, rec ? ()=>delRec('stuhl',cur.id) : null));
+}
+async function saveStuhl(){
+  const iv = $('#tsInput-stuhl'); if(iv && iv.value){ const d = fromLocalInput(iv.value); cur.ts = toISO(d); cur.datum = dateKey(d); }
+  if(!cur.bristol){ toast('Bitte Bristol-Typ wählen'); window.scrollTo(0,140); return; }
+  cur.updated = toISO(new Date());
+  await dbPut('stuhl', cur);
+  toast('Stuhl gespeichert');
+  viewDay = cur.datum; backOrHome();
+}
+
+/* ---------- Tagesabschluss ---------- */
+async function openTag(datum){
+  curType = 'tag';
+  const key = datum || dateKey(new Date());
+  const ex = await dbGet('tag', key);
+  const now = new Date();
+  cur = ex ? JSON.parse(JSON.stringify(ex)) : {
+    datum:key, blaehungen:null, bauchschmerz:null, energie:null, stress:null,
+    schlaf_zubett:'', schlaf_auf:'', schlaf_dauer_min:null, schlaf_qualitaet:null,
+    medikamente:[], sport:[], reise:null, besonderes:'', notiz:'',
+    created:toISO(now), updated:toISO(now)
+  };
+  cur._zubett_t = cur.schlaf_zubett ? isoTime(cur.schlaf_zubett) : '';
+  cur._auf_t = cur.schlaf_auf ? isoTime(cur.schlaf_auf) : '';
+
+  const root = $('#f-tag'); root.innerHTML = '';
+  root.appendChild(formHead('Tagesabschluss', prettyDay(key)+(ex?' · bereits erfasst, wird überschrieben':'')));
+
+  const df = el('div',{class:'fld'});
+  df.appendChild(el('label',{text:'Datum'}));
+  const dInp = el('input',{type:'date',id:'tagDate',max:dateKey(new Date())});
+  dInp.value = key;
+  dInp.onchange = ()=>{ if(dInp.value) openTag(dInp.value); };
+  df.appendChild(dInp);
+  root.appendChild(df);
+
+  root.appendChild(scaleField('Blähungen','blaehungen',SC.standard));
+  root.appendChild(scaleField('Bauchschmerz','bauchschmerz',SC.standard));
+  root.appendChild(scaleField('Energie','energie',SC.energie));
+  root.appendChild(scaleField('Stress','stress',SC.stress));
+
+  const sl = el('div',{class:'fld'});
+  sl.appendChild(el('label',{text:'Schlaf letzte Nacht'}));
+  const sr = el('div',{class:'row'});
+  const zb = el('input',{type:'time',id:'zbT',step:'300'}); zb.value = cur._zubett_t;
+  const af = el('input',{type:'time',id:'afT',step:'300'}); af.value = cur._auf_t;
+  const dur = el('div',{class:'hint',id:'durTxt'});
+  function upd(){
+    cur._zubett_t = zb.value; cur._auf_t = af.value;
+    const m = sleepMinutes(cur.datum, zb.value, af.value);
+    dur.textContent = m==null ? 'Zubettgehen · Aufstehen' : 'Schlafdauer: '+Math.floor(m/60)+' h '+pad(m%60)+' min';
+  }
+  zb.onchange = upd; af.onchange = upd;
+  sr.appendChild(zb); sr.appendChild(el('div',{style:'color:var(--fg2)',text:'→'})); sr.appendChild(af);
+  sl.appendChild(sr); sl.appendChild(dur); upd();
+  root.appendChild(sl);
+  root.appendChild(scaleField('Schlafqualität','schlaf_qualitaet',SC.schlafqual));
+
+  root.appendChild(chipsField('Medikamente & Supplemente','medikamente',CHIPS.medikamente,true));
+  root.appendChild(chipsField('Sport & Bewegung','sport',CHIPS.sport,true));
+  const rb = el('div',{class:'fld'});
+  rb.appendChild(el('label',{text:'Besonderes'}));
+  rb.appendChild(boolRow('Reise / auswärts geschlafen','reise'));
+  root.appendChild(rb);
+  root.appendChild(textField('Besonderes (Details)','besonderes','Dosierungen, Reiseziel, Krankheit, Zyklus …',2));
+  root.appendChild(textField('Notiz','notiz','Freitext zum Tag'));
+  root.appendChild(saveBar(saveTag, ex ? ()=>delRec('tag',cur.datum) : null));
+}
+/* Zubettgehen ab 12:00 = Vorabend des Tagesdatums */
+function sleepISO(datum, hhmm, isBed){
+  if(!hhmm) return '';
+  const m = /^(\d{1,2}):(\d{2})/.exec(hhmm); if(!m) return '';
+  const d = fromDateKey(datum);
+  if(isBed && +m[1] >= 12) d.setDate(d.getDate()-1);
+  d.setHours(+m[1], +m[2], 0, 0);
+  return toISO(d);
+}
+function sleepMinutes(datum, bed, up){
+  const a = sleepISO(datum, bed, true), b = sleepISO(datum, up, false);
+  if(!a || !b) return null;
+  let mins = Math.round((new Date(b) - new Date(a))/60000);
+  if(mins < 0) mins += 1440;
+  if(mins > 1200) return null;
+  return mins;
+}
+async function saveTag(){
+  const dInp = $('#tagDate'); if(dInp && dInp.value) cur.datum = dInp.value;
+  cur.schlaf_zubett = sleepISO(cur.datum, cur._zubett_t, true);
+  cur.schlaf_auf = sleepISO(cur.datum, cur._auf_t, false);
+  cur.schlaf_dauer_min = sleepMinutes(cur.datum, cur._zubett_t, cur._auf_t);
+  delete cur._zubett_t; delete cur._auf_t;
+  cur.updated = toISO(new Date());
+  await dbPut('tag', cur);
+  toast('Tagesabschluss gespeichert');
+  viewDay = cur.datum; backOrHome();
+}
+
+async function delRec(store, key){
+  const ok = await confirmBox('Eintrag löschen?','Das lässt sich nicht rückgängig machen.','Löschen',true);
+  if(!ok) return;
+  await dbDel(store, key);
+  toast('Gelöscht'); backOrHome();
+}
+function backOrHome(){
+  if(history.state && history.state.v) history.back(); else goHome();
+}
+
+/* ---------- Chips verwalten ---------- */
+function openChips(){
+  const root = $('#f-chips'); root.innerHTML = '';
+  root.appendChild(formHead('Chips verwalten','Antippbare Listen für die Formulare.'));
+  const groups = [];
+  Object.keys(CHIPS.essen).forEach(g=>groups.push({path:['essen',g], name:g}));
+  groups.push({path:['getraenke'], name:'Getränke'});
+  groups.push({path:['sport'], name:'Sport & Bewegung'});
+  groups.push({path:['medikamente'], name:'Medikamente'});
+
+  groups.forEach(g=>{
+    const arr = g.path.length===2 ? CHIPS[g.path[0]][g.path[1]] : CHIPS[g.path[0]];
+    const dt = el('details',{});
+    dt.appendChild(el('summary',{},esc(g.name)+'<span class="cnt">'+arr.length+'</span>'));
+    const inn = el('div',{class:'in'});
+    const box = el('div',{class:'chips'});
+    arr.forEach(n=>{
+      const b = el('button',{type:'button',class:'chip x'}, esc(n)+'<span class="rm">×</span>');
+      b.onclick = async ()=>{
+        const i = arr.indexOf(n); if(i>=0) arr.splice(i,1);
+        await metaSet('chips', CHIPS); openChips(); toast('"'+n+'" entfernt');
+      };
+      box.appendChild(b);
+    });
+    inn.appendChild(box);
+    const row = el('div',{class:'row',style:'margin-top:10px'});
+    const inp = el('input',{type:'text',placeholder:'Neuer Chip'});
+    const add = el('button',{type:'button',class:'hbtn prim',text:'+'});
+    add.style.minWidth='56px';
+    add.onclick = async ()=>{
+      const v = inp.value.trim(); if(!v) return;
+      if(arr.indexOf(v)<0) arr.push(v);
+      await metaSet('chips', CHIPS); openChips(); toast('"'+v+'" hinzugefügt');
+    };
+    row.appendChild(inp); row.appendChild(add);
+    inn.appendChild(row);
+    if(g.path.length===2){
+      const dl = el('button',{type:'button',class:'btn dgr',style:'margin-top:10px',text:'Gruppe "'+g.name+'" löschen'});
+      dl.onclick = async ()=>{
+        const ok = await confirmBox('Gruppe löschen?','"'+g.name+'" mit '+arr.length+' Chips wird entfernt. Bereits erfasste Einträge bleiben unverändert.','Löschen',true);
+        if(!ok) return;
+        delete CHIPS.essen[g.name]; await metaSet('chips', CHIPS); openChips();
+      };
+      inn.appendChild(dl);
+    }
+    dt.appendChild(inn);
+    root.appendChild(dt);
+  });
+
+  const ng = el('div',{class:'fld',style:'margin-top:16px'});
+  ng.appendChild(el('label',{text:'Neue Lebensmittel-Gruppe'}));
+  const nr = el('div',{class:'row'});
+  const ni = el('input',{type:'text',placeholder:'z.B. FODMAP-arm'});
+  const nb = el('button',{type:'button',class:'hbtn prim',text:'+'}); nb.style.minWidth='56px';
+  nb.onclick = async ()=>{
+    const v = ni.value.trim(); if(!v) return;
+    if(!CHIPS.essen[v]) CHIPS.essen[v]=[];
+    await metaSet('chips', CHIPS); openChips(); toast('Gruppe "'+v+'" erstellt');
+  };
+  nr.appendChild(ni); nr.appendChild(nb);
+  ng.appendChild(nr);
+  root.appendChild(ng);
+
+  const rst = el('button',{type:'button',class:'btn',text:'Standardlisten wiederherstellen'});
+  rst.onclick = async ()=>{
+    const ok = await confirmBox('Zurücksetzen?','Alle Chip-Listen werden auf die Startliste zurückgesetzt. Eigene Chips gehen verloren, erfasste Einträge bleiben.','Zurücksetzen',true);
+    if(!ok) return;
+    CHIPS = JSON.parse(JSON.stringify(DEFAULT_CHIPS));
+    await metaSet('chips', CHIPS); openChips(); toast('Zurückgesetzt');
+  };
+  root.appendChild(rst);
+}
+/* ============================================================
+   Teil 4: Export (CSV/JSON), Import, Backup-Hinweis, Info, Start
+   ============================================================ */
+const CODEBOOK = {
+  hinweis:'Alle Skalen sind ordinal 0–3. Zeitstempel sind ISO 8601 mit lokalem Offset. Leere Zelle = nicht erfasst. Booleans: 1 = ja, 0 = nein.',
+  skalen:{
+    blaehungen:SC.standard, bauchschmerz:SC.standard, schmerz_vorher:SC.standard, schmerz_nachher:SC.standard,
+    dringlichkeit:SC.dringlich, geruch:SC.geruch, energie:SC.energie, stress:SC.stress, schlaf_qualitaet:SC.schlafqual
+  },
+  bristol:BRISTOL.map(b=>b[0]+' = '+b[1]),
+  schlaf:'schlaf_zubett/schlaf_auf beziehen sich auf die Nacht VOR dem Tagesdatum (Zubettgehen ab 12:00 wird dem Vortag zugeordnet, Aufstehen dem Tagesdatum). Merge mit Garmin-Daten über das Feld datum.',
+  energie_richtung:'Achtung: bei energie und schlaf_qualitaet bedeutet 3 = gut, bei allen Symptom-Skalen 3 = stark.'
+};
+const CSV_COLS = {
+  essen:['id','ts','datum','zeit','typ','items','getraenke','zubereitung','kaffee','alkohol','suessstoffe','notiz','erfasst_am','geaendert_am'],
+  stuhl:['id','ts','datum','zeit','bristol','dringlichkeit','geruch','schmerz_vorher','schmerz_nachher','farbe','schwimmt','unverdaute_reste','schleim','blut','notiz','erfasst_am','geaendert_am'],
+  tag:['datum','blaehungen','bauchschmerz','energie','stress','schlaf_zubett','schlaf_auf','schlaf_dauer_min','schlaf_qualitaet','medikamente','sport','reise','besonderes','notiz','erfasst_am','geaendert_am']
+};
+const B = v => v===true?'1':(v===false?'0':'');
+function csvCell(v, sep){
+  if(v==null) return '';
+  let s = Array.isArray(v) ? v.join('|') : String(v);
+  const need = s.indexOf(sep)>=0 || s.indexOf('"')>=0 || /[\n\r]/.test(s);
+  if(s.indexOf('"')>=0) s = s.replace(/"/g,'""');
+  return need ? '"'+s+'"' : s;
+}
+function buildCSV(kind, rows, sep){
+  const cols = CSV_COLS[kind];
+  const out = [cols.join(sep)];
+  rows.forEach(r=>{
+    let o;
+    if(kind==='essen') o = {id:r.id, ts:r.ts, datum:r.datum, zeit:isoTime(r.ts), typ:r.typ,
+      items:r.items, getraenke:r.getraenke, zubereitung:r.zubereitung,
+      kaffee:B(r.kaffee), alkohol:B(r.alkohol), suessstoffe:B(r.suessstoffe),
+      notiz:r.notiz, erfasst_am:r.created, geaendert_am:r.updated};
+    else if(kind==='stuhl') o = {id:r.id, ts:r.ts, datum:r.datum, zeit:isoTime(r.ts), bristol:r.bristol,
+      dringlichkeit:r.dringlichkeit, geruch:r.geruch, schmerz_vorher:r.schmerz_vorher, schmerz_nachher:r.schmerz_nachher,
+      farbe:r.farbe, schwimmt:B(r.schwimmt), unverdaute_reste:B(r.unverdaute_reste), schleim:B(r.schleim), blut:B(r.blut),
+      notiz:r.notiz, erfasst_am:r.created, geaendert_am:r.updated};
+    else o = {datum:r.datum, blaehungen:r.blaehungen, bauchschmerz:r.bauchschmerz, energie:r.energie, stress:r.stress,
+      schlaf_zubett:r.schlaf_zubett, schlaf_auf:r.schlaf_auf, schlaf_dauer_min:r.schlaf_dauer_min, schlaf_qualitaet:r.schlaf_qualitaet,
+      medikamente:r.medikamente, sport:r.sport, reise:B(r.reise), besonderes:r.besonderes, notiz:r.notiz,
+      erfasst_am:r.created, geaendert_am:r.updated};
+    out.push(cols.map(c=>csvCell(o[c], sep)).join(sep));
+  });
+  return '﻿' + out.join('\r\n') + '\r\n';
+}
+let EX = null;   // vorgeladene Daten für den Export (Share braucht synchronen Start)
+function exFiles(which){
+  const sep = SETTINGS.sep || ';';
+  const stamp = dateKey(new Date());
+  const f = [];
+  if(which==='all' || which==='essen') f.push({name:'verdauung_essen_'+stamp+'.csv', type:'text/csv', data:buildCSV('essen',EX.essen,sep)});
+  if(which==='all' || which==='stuhl') f.push({name:'verdauung_stuhl_'+stamp+'.csv', type:'text/csv', data:buildCSV('stuhl',EX.stuhl,sep)});
+  if(which==='all' || which==='tag')   f.push({name:'verdauung_tag_'+stamp+'.csv',   type:'text/csv', data:buildCSV('tag',EX.tag,sep)});
+  if(which==='all' || which==='json')  f.push({name:'verdauung_backup_'+stamp+'.json', type:'application/json', data:JSON.stringify({
+      app:'verdauungstagebuch', version:APP_VERSION, exportiert:toISO(new Date()),
+      codebook:CODEBOOK, chips:CHIPS, settings:SETTINGS,
+      essen:EX.essen, stuhl:EX.stuhl, tag:EX.tag
+    }, null, 1)});
+  return f;
+}
+async function markBackupDone(){
+  await metaSet('lastBackup', toISO(new Date()));
+  const l = $('#lastBk'); if(l) l.textContent = 'gerade jetzt';
+}
+function downloadFiles(files){
+  files.forEach((f,i)=>setTimeout(()=>{
+    const url = URL.createObjectURL(new Blob([f.data],{type:f.type}));
+    const a = document.createElement('a');
+    a.href = url; a.download = f.name; a.rel='noopener';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 8000);
+  }, i*350));
+  toast('Download gestartet');
+}
+function shareOrDownload(which, isBackup){
+  const files = exFiles(which);
+  let fs = null;
+  try{ fs = files.map(f=>new File([f.data], f.name, {type:f.type})); }catch(e){ fs = null; }
+  if(fs && navigator.canShare && navigator.canShare({files:fs})){
+    navigator.share({files:fs, title:'Verdauungstagebuch'})
+      .then(()=>{ if(isBackup) markBackupDone(); toast('Geteilt'); })
+      .catch(err=>{ if(err && err.name==='AbortError') return; downloadFiles(files); if(isBackup) markBackupDone(); });
+  } else {
+    downloadFiles(files); if(isBackup) markBackupDone();
+  }
+}
+async function openExport(){
+  const root = $('#f-export'); root.innerHTML = '';
+  root.appendChild(formHead('Export & Backup','Über das Share Sheet an Mail, Files, WhatsApp …'));
+  root.appendChild(el('div',{class:'empty',text:'Daten werden geladen …'}));
+  const [essen, stuhl, tag] = await Promise.all([dbAll('essen'), dbAll('stuhl'), dbAll('tag')]);
+  essen.sort((a,b)=>a.ts<b.ts?-1:1); stuhl.sort((a,b)=>a.ts<b.ts?-1:1); tag.sort((a,b)=>a.datum<b.datum?-1:1);
+  EX = {essen:essen, stuhl:stuhl, tag:tag};
+  const last = await metaGet('lastBackup', null);
+
+  root.innerHTML = '';
+  root.appendChild(formHead('Export & Backup','Über das Share Sheet an Mail, Files, WhatsApp …'));
+
+  const st = el('div',{class:'card'});
+  st.appendChild(el('h3',{text:'Datenbestand'}));
+  const days = {};
+  essen.forEach(r=>days[r.datum]=1); stuhl.forEach(r=>days[r.datum]=1); tag.forEach(r=>days[r.datum]=1);
+  const dk = Object.keys(days).sort();
+  [['Essen', essen.length+' Einträge'],['Stuhl', stuhl.length+' Einträge'],['Tagesabschluss', tag.length+' Tage'],
+   ['Erfasste Tage', dk.length ? dk.length+' ('+prettyDay(dk[0]).split('· ').pop()+' – '+prettyDay(dk[dk.length-1]).split('· ').pop()+')' : '–']
+  ].forEach(([k,v])=>{
+    const r = el('div',{class:'kv'}); r.appendChild(el('div',{text:k})); r.appendChild(el('span',{text:v})); st.appendChild(r);
+  });
+  const bk = el('div',{class:'kv'}); bk.appendChild(el('div',{text:'Letztes Backup'}));
+  const bkv = el('span',{id:'lastBk',text: last ? prettyDay(isoDate(last))+' '+isoTime(last) : 'noch keines'});
+  bk.appendChild(bkv); st.appendChild(bk);
+  root.appendChild(st);
+
+  const a1 = el('button',{type:'button',class:'btn prim',text:'Alles teilen · 3 CSV + JSON'});
+  a1.onclick = ()=>shareOrDownload('all', true);
+  root.appendChild(a1);
+  [['essen','essen.csv'],['stuhl','stuhl.csv'],['tag','tag.csv']].forEach(([k,l])=>{
+    const b = el('button',{type:'button',class:'btn',text:l+' teilen'});
+    b.onclick = ()=>shareOrDownload(k, false);
+    root.appendChild(b);
+  });
+  const jb = el('button',{type:'button',class:'btn',text:'Nur JSON-Vollbackup teilen'});
+  jb.onclick = ()=>shareOrDownload('json', true);
+  root.appendChild(jb);
+
+  const sepf = el('div',{class:'fld',style:'margin-top:18px'});
+  sepf.appendChild(el('label',{text:'CSV-Trennzeichen'}));
+  const seg = el('div',{class:'seg'});
+  [[';','Semikolon (Excel CH)'],[',','Komma (R/Python)']].forEach(([v,l])=>{
+    const b = el('button',{type:'button',text:l,'aria-pressed': (SETTINGS.sep||';')===v?'true':'false'});
+    b.onclick = async ()=>{ SETTINGS.sep=v; await metaSet('settings',SETTINGS); seg.querySelectorAll('button').forEach((x,i)=>x.setAttribute('aria-pressed', (i===0?';':',')===v?'true':'false')); toast('Trennzeichen: '+l); };
+    seg.appendChild(b);
+  });
+  sepf.appendChild(seg);
+  root.appendChild(sepf);
+
+  const cp = el('button',{type:'button',class:'btn',text:'Alle CSV in Zwischenablage kopieren'});
+  cp.onclick = ()=>{
+    const t = exFiles('all').filter(f=>f.name.endsWith('.csv')).map(f=>'### '+f.name+'\n'+f.data.replace('﻿','')).join('\n\n');
+    if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(()=>toast('Kopiert')).catch(()=>toast('Kopieren nicht möglich'));
+    else toast('Kopieren nicht möglich');
+  };
+  root.appendChild(cp);
+
+  /* Import */
+  const imp = el('div',{class:'card',style:'margin-top:20px'});
+  imp.appendChild(el('h3',{text:'JSON-Import (Wiederherstellen)'}));
+  imp.appendChild(el('p',{text:'Datei aus einem früheren JSON-Vollbackup wählen. Zusammenführen behält bestehende Einträge und überschreibt nur gleiche IDs bzw. Tage.'}));
+  const fi = el('input',{type:'file',accept:'application/json,.json',id:'impFile'});
+  imp.appendChild(fi);
+  const ib = el('button',{type:'button',class:'btn',style:'margin-top:10px',text:'Zusammenführen'});
+  ib.onclick = ()=>doImport(false);
+  const ib2 = el('button',{type:'button',class:'btn dgr',text:'Alles ersetzen'});
+  ib2.onclick = ()=>doImport(true);
+  imp.appendChild(ib); imp.appendChild(ib2);
+  root.appendChild(imp);
+}
+function doImport(replace){
+  const fi = $('#impFile');
+  if(!fi.files || !fi.files[0]){ toast('Zuerst Datei wählen'); return; }
+  const fr = new FileReader();
+  fr.onload = async ()=>{
+    let d;
+    try{ d = JSON.parse(fr.result); }catch(e){ toast('Datei ist kein gültiges JSON'); return; }
+    if(!d || d.app!=='verdauungstagebuch'){
+      const ok = await confirmBox('Unbekanntes Format','Die Datei stammt nicht aus dieser App. Trotzdem versuchen?','Versuchen',true);
+      if(!ok) return;
+    }
+    const ce = (d.essen||[]).length, cs = (d.stuhl||[]).length, ct = (d.tag||[]).length;
+    const ok = await confirmBox(replace?'Alles ersetzen?':'Zusammenführen?',
+      'Backup vom '+(d.exportiert?isoDate(d.exportiert):'?')+'\n'+ce+' Essen · '+cs+' Stuhl · '+ct+' Tage'+
+      (replace?'\n\nAlle aktuellen Daten werden vorher gelöscht.':''), replace?'Ersetzen':'Importieren', replace);
+    if(!ok) return;
+    try{
+      if(replace){ await dbClear('essen'); await dbClear('stuhl'); await dbClear('tag'); }
+      await dbPutMany('essen', d.essen||[]);
+      await dbPutMany('stuhl', d.stuhl||[]);
+      await dbPutMany('tag', d.tag||[]);
+      if(d.chips){
+        if(replace) CHIPS = d.chips;
+        else {
+          Object.keys(d.chips.essen||{}).forEach(g=>{
+            CHIPS.essen[g] = CHIPS.essen[g]||[];
+            d.chips.essen[g].forEach(n=>{ if(CHIPS.essen[g].indexOf(n)<0) CHIPS.essen[g].push(n); });
+          });
+          ['getraenke','sport','medikamente'].forEach(k=>{
+            (d.chips[k]||[]).forEach(n=>{ if(CHIPS[k].indexOf(n)<0) CHIPS[k].push(n); });
+          });
+        }
+        await metaSet('chips', CHIPS);
+      }
+      toast('Import fertig: '+(ce+cs+ct)+' Datensätze', 3000);
+      openExport();
+    }catch(e){ toast('Import fehlgeschlagen: '+(e&&e.message)); }
+  };
+  fr.readAsText(fi.files[0]);
+}
+
+/* ---------- Info ---------- */
+async function openInfo(){
+  const root = $('#f-info'); root.innerHTML = '';
+  root.appendChild(formHead('Info & Legende','Version '+APP_VERSION));
+  const [essen, stuhl, tag] = await Promise.all([dbAll('essen'), dbAll('stuhl'), dbAll('tag')]);
+  const first = await metaGet('firstUse', null);
+  let persisted = null;
+  try{ if(navigator.storage && navigator.storage.persisted) persisted = await navigator.storage.persisted(); }catch(e){}
+
+  const c1 = el('div',{class:'card'});
+  c1.appendChild(el('h3',{text:'Status'}));
+  [['Version','v'+APP_VERSION],['Einträge', (essen.length+stuhl.length)+' + '+tag.length+' Tage'],
+   ['Erste Nutzung', first ? isoDate(first) : '–'],
+   ['Speicher dauerhaft', persisted===null?'unbekannt':(persisted?'ja':'nein (nicht kritisch)')],
+   ['Zeitzone', Intl.DateTimeFormat().resolvedOptions().timeZone+' ('+offsetStr(new Date())+')']
+  ].forEach(([k,v])=>{
+    const r = el('div',{class:'kv'}); r.appendChild(el('div',{text:k})); r.appendChild(el('span',{text:v})); c1.appendChild(r);
+  });
+  root.appendChild(c1);
+
+  const c2 = el('div',{class:'card'});
+  c2.appendChild(el('h3',{text:'Skalen (ordinal 0–3)'}));
+  const leg = el('div',{class:'leg'});
+  const rows = [
+    ['Blähungen / Bauchschmerz / Schmerz', SC.standard],
+    ['Dringlichkeit', SC.dringlich],
+    ['Geruch', SC.geruch],
+    ['Energie (3 = gut!)', SC.energie],
+    ['Stress', SC.stress],
+    ['Schlafqualität (3 = gut!)', SC.schlafqual]
+  ];
+  rows.forEach(([k,v])=>{
+    leg.appendChild(el('div',{},'<b>'+esc(k)+'</b>: '+v.map((x,i)=>i+' '+esc(x)).join(' · ')));
+  });
+  leg.appendChild(el('div',{style:'margin-top:8px'},'<b>Bristol</b>: '+BRISTOL.map(b=>b[0]+' '+esc(b[1])).join(' · ')));
+  leg.appendChild(el('div',{style:'margin-top:8px'},'<b>Schlaf</b>: bezieht sich auf die Nacht vor dem Tagesdatum. Merge mit Garmin über <b>datum</b>.'));
+  c2.appendChild(leg);
+  root.appendChild(c2);
+
+  const c3 = el('div',{class:'card'});
+  c3.appendChild(el('h3',{text:'Daten & Sicherheit'}));
+  c3.appendChild(el('p',{text:'Alle Daten liegen ausschliesslich in diesem Browser (IndexedDB) auf diesem Gerät. Kein Server, kein Konto, keine Übertragung. Wenn du Safari-Daten löschst oder die App vom Home-Bildschirm entfernst, sind die Daten weg — darum wöchentlich das JSON-Backup teilen und ablegen.'}));
+  const pb = el('button',{type:'button',class:'btn',text:'Dauerhaften Speicher anfordern'});
+  pb.onclick = async ()=>{
+    try{ const r = await navigator.storage.persist(); toast(r?'Dauerhaft gewährt':'Vom Browser abgelehnt'); openInfo(); }
+    catch(e){ toast('Nicht unterstützt'); }
+  };
+  c3.appendChild(pb);
+  root.appendChild(c3);
+
+  const dz = el('button',{type:'button',class:'btn dgr',text:'Alle Daten löschen'});
+  dz.onclick = async ()=>{
+    const ok = await confirmBox('Wirklich alles löschen?','Alle Einträge werden unwiderruflich gelöscht. Vorher exportieren!','Alles löschen',true);
+    if(!ok) return;
+    const ok2 = await confirmBox('Sicher?','Letzte Warnung: '+(essen.length+stuhl.length+tag.length)+' Datensätze werden gelöscht.','Ja, löschen',true);
+    if(!ok2) return;
+    await dbClear('essen'); await dbClear('stuhl'); await dbClear('tag');
+    toast('Alle Daten gelöscht'); goHome();
+  };
+  root.appendChild(dz);
+}
+
+/* ---------- Start ---------- */
+document.addEventListener('visibilitychange', ()=>{
+  if(document.hidden) return;
+  const t = dateKey(new Date());
+  if(viewDay === renderedToday && t !== renderedToday) viewDay = t;   // über Mitternacht hinweg
+  renderedToday = t;
+  if($('#v-home').classList.contains('on')) renderHome();
+});
+(async function init(){
+  try{
+    CHIPS = await metaGet('chips', null);
+    if(!CHIPS){ CHIPS = JSON.parse(JSON.stringify(DEFAULT_CHIPS)); await metaSet('chips', CHIPS); }
+    if(!CHIPS.essen) CHIPS.essen = JSON.parse(JSON.stringify(DEFAULT_CHIPS.essen));
+    ['getraenke','sport','medikamente'].forEach(k=>{ if(!Array.isArray(CHIPS[k])) CHIPS[k] = DEFAULT_CHIPS[k].slice(); });
+    SETTINGS = await metaGet('settings', {sep:';'});
+    if(!SETTINGS.sep) SETTINGS.sep = ';';
+    if(!(await metaGet('firstUse', null))) await metaSet('firstUse', toISO(new Date()));
+    if(navigator.storage && navigator.storage.persist){ try{ await navigator.storage.persist(); }catch(e){} }
+    history.replaceState({},'',location.hash||'');
+    viewDay = dateKey(new Date());
+    await renderHome();
+    window.__ready = true;
+  }catch(e){
+    document.body.insertAdjacentHTML('afterbegin',
+      '<div style="padding:16px;background:#a32020;color:#fff">Datenbank-Fehler: '+esc(e&&e.message||e)+'</div>');
+  }
+})();
+</script>
 </body>
 </html>
