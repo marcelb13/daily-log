@@ -6,7 +6,7 @@
    BEI JEDEM UPDATE: VERSION hochziehen, identisch zu APP_VERSION in index.html.
    Nur eine geänderte sw.js löst beim Browser überhaupt ein Update aus.        */
 
-const VERSION = '1.1.0';
+const VERSION = '1.2.0';
 const CACHE   = 'verdauung-' + VERSION;
 const PAGE    = './index.html';
 

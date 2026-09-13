@@ -273,7 +273,7 @@ details .in{padding:0 14px 14px}
    gleich, siehst du auf dem iPhone ewig die alte Fassung.
    Kontrolle danach: Info → Offline-Cache zeigt dieselbe Nummer, keine Warnung.
    =========================================================================== */
-const APP_VERSION = '1.1.0';
+const APP_VERSION = '1.2.0';
 const DB_NAME = 'verdauungstagebuch';
 const DB_VERSION = 1;
 const STORES = ['essen','stuhl','tag','meta'];
@@ -501,13 +501,14 @@ function syncChips(field, root){
     c.setAttribute('aria-pressed', on?'true':'false');
   });
 }
+function makeChip(field, name, multi, onChange){
+  const b = el('button',{type:'button',class:'chip','data-name':name,'data-field':field,'aria-pressed':'false',text:name});
+  b.onclick = ()=>{ toggleVal(field,name,multi); syncChips(field); if(onChange) onChange(); };
+  return b;
+}
 function chipsBox(field, list, multi, onChange){
   const box = el('div',{class:'chips'});
-  list.forEach(name=>{
-    const b = el('button',{type:'button',class:'chip','data-name':name,'data-field':field,'aria-pressed':'false',text:name});
-    b.onclick = ()=>{ toggleVal(field,name,multi); syncChips(field); if(onChange) onChange(); };
-    box.appendChild(b);
-  });
+  list.forEach(name=>box.appendChild(makeChip(field, name, multi, onChange)));
   syncChips(field, box);
   return box;
 }
@@ -627,6 +628,7 @@ async function renderHome(){
     const parts = [];
     if(r.items && r.items.length) parts.push(r.items.join(', '));
     if(r.getraenke && r.getraenke.length) parts.push('Getränk: '+r.getraenke.join(', '));
+    if(r.medikamente && r.medikamente.length) parts.push('Supplement: '+r.medikamente.join(', '));
     if(r.notiz) parts.push(r.notiz);
     const flags = [];
     if(r.kaffee) flags.push('Kaffee'); if(r.alkohol) flags.push('Alkohol'); if(r.suessstoffe) flags.push('Süssstoffe');
@@ -690,10 +692,13 @@ async function openEssen(rec){
   curType = 'essen';
   const now = new Date();
   cur = rec ? JSON.parse(JSON.stringify(rec)) : {
-    id:uid(), ts:toISO(now), datum:dateKey(now), typ:'', items:[], getraenke:[],
+    id:uid(), ts:toISO(now), datum:dateKey(now), typ:'', items:[], getraenke:[], medikamente:[],
     zubereitung:[], kaffee:false, alkohol:false, suessstoffe:false, notiz:'',
     created:toISO(now), updated:toISO(now)
   };
+  ['items','getraenke','medikamente','zubereitung'].forEach(k=>{ if(!Array.isArray(cur[k])) cur[k]=[]; });
+  if(!CHIPS.essen['Eigene']) CHIPS.essen['Eigene'] = [];
+  const lastAdd = await metaGet('lastAddGroup','');
   let d = rec ? fromLocalInput(cur.ts.slice(0,16)) : now;
   if(!rec && cur.typ==='') cur.typ = guessMahlzeit(d);
 
@@ -721,7 +726,7 @@ async function openEssen(rec){
   selWrap.appendChild(selBox);
   function renderSel(){
     selBox.innerHTML = '';
-    const items = (cur.items||[]).concat(cur.getraenke||[]);
+    const items = (cur.items||[]).concat(cur.getraenke||[], cur.medikamente||[]);
     if(!items.length){ selBox.appendChild(el('div',{class:'none',text:'Noch nichts gewählt — unten antippen.'})); return; }
     const box = el('div',{class:'chips'});
     (cur.items||[]).slice().forEach(name=>{
@@ -732,6 +737,11 @@ async function openEssen(rec){
     (cur.getraenke||[]).slice().forEach(name=>{
       const b = el('button',{type:'button',class:'chip x','aria-pressed':'true'}, esc(name)+' <span style="opacity:.7">(Getränk)</span><span class="rm">×</span>');
       b.onclick = ()=>{ toggleVal('getraenke',name,true); syncChips('getraenke'); renderSel(); };
+      box.appendChild(b);
+    });
+    (cur.medikamente||[]).slice().forEach(name=>{
+      const b = el('button',{type:'button',class:'chip x','aria-pressed':'true'}, esc(name)+' <span style="opacity:.7">(Supplement)</span><span class="rm">×</span>');
+      b.onclick = ()=>{ toggleVal('medikamente',name,true); syncChips('medikamente'); renderSel(); updMedCnt(); };
       box.appendChild(b);
     });
     selBox.appendChild(box);
@@ -754,9 +764,11 @@ async function openEssen(rec){
     if(q.length < 2) return;
     const hits = allFood.filter(n=>n.toLowerCase().indexOf(q)>=0).slice(0,30);
     const dr = CHIPS.getraenke.filter(n=>n.toLowerCase().indexOf(q)>=0).slice(0,10);
+    const md = CHIPS.medikamente.filter(n=>n.toLowerCase().indexOf(q)>=0).slice(0,10);
     if(hits.length) sRes.appendChild(chipsBox('items', hits, true, renderSel));
     if(dr.length) sRes.appendChild(chipsBox('getraenke', dr, true, renderSel));
-    if(!hits.length && !dr.length) sRes.appendChild(el('div',{class:'none',text:'Kein Treffer — unten "Eigenes" verwenden.'}));
+    if(md.length) sRes.appendChild(chipsBox('medikamente', md, true, ()=>{ renderSel(); updMedCnt(); }));
+    if(!hits.length && !dr.length && !md.length) sRes.appendChild(el('div',{class:'none',text:'Kein Treffer — unten "Eigenes hinzufügen" verwenden.'}));
   };
   root.appendChild(sf);
 
@@ -771,34 +783,64 @@ async function openEssen(rec){
     inn.appendChild(chipsBox('items', tItems, true, renderSel));
     dt.appendChild(inn); gWrap.appendChild(dt);
   }
+  const boxes = {};
   Object.keys(CHIPS.essen).forEach(g=>{
     const dt = el('details',{});
     dt.appendChild(el('summary',{},esc(g)));
     const inn = el('div',{class:'in'});
-    inn.appendChild(chipsBox('items', CHIPS.essen[g], true, renderSel));
+    const bx = chipsBox('items', CHIPS.essen[g], true, renderSel);
+    boxes['essen:'+g] = bx;
+    inn.appendChild(bx);
     dt.appendChild(inn); gWrap.appendChild(dt);
   });
-  /* Eigenes */
-  const own = el('div',{style:'margin-top:10px'});
+  /* Eigenes hinzufügen — Zielliste frei wählbar */
+  const own = el('div',{style:'margin-top:12px'});
   own.appendChild(el('div',{class:'lbl',text:'Eigenes hinzufügen'}));
-  const oRow = el('div',{class:'row'});
-  const oInp = el('input',{type:'text',placeholder:'Eigenes Lebensmittel'});
-  const oBtn = el('button',{type:'button',class:'hbtn prim',text:'+'});
-  oBtn.style.minWidth = '56px';
+  const oInp = el('input',{type:'text',id:'ownName',placeholder:'Name, z.B. Ziegenfrischkäse'});
+  own.appendChild(oInp);
+  const oRow = el('div',{class:'row',style:'margin-top:8px'});
+  const oSel = el('select',{id:'ownGroup'});
+  const valid = [];
+  const og1 = el('optgroup',{label:'Lebensmittel-Gruppe'});
+  Object.keys(CHIPS.essen).forEach(g=>{ og1.appendChild(el('option',{value:'essen:'+g,text:g})); valid.push('essen:'+g); });
+  const og2 = el('optgroup',{label:'Andere Liste'});
+  og2.appendChild(el('option',{value:'getraenke',text:'Getränke'}));
+  og2.appendChild(el('option',{value:'medikamente',text:'Medikamente & Supplemente'}));
+  valid.push('getraenke','medikamente');
+  oSel.appendChild(og1); oSel.appendChild(og2);
+  oSel.value = valid.indexOf(lastAdd)>=0 ? lastAdd : 'essen:Eigene';
+  const oBtn = el('button',{type:'button',class:'hbtn prim',text:'Hinzufügen'});
+  oBtn.style.whiteSpace = 'nowrap';
   oBtn.onclick = async ()=>{
-    const v = oInp.value.trim(); if(!v) return;
-    if((cur.items||[]).indexOf(v)<0) (cur.items=cur.items||[]).push(v);
-    if(allFood.indexOf(v)<0){
-      CHIPS.essen['Eigene'] = CHIPS.essen['Eigene']||[];
-      if(CHIPS.essen['Eigene'].indexOf(v)<0) CHIPS.essen['Eigene'].push(v);
-      allFood.push(v); await metaSet('chips', CHIPS);
-      toast('"'+v+'" als Chip gespeichert');
+    const v = oInp.value.trim(); if(!v){ toast('Zuerst einen Namen eintippen'); return; }
+    const target = oSel.value;
+    let field, list, box;
+    if(target==='getraenke'){ field='getraenke'; list=CHIPS.getraenke; box=boxes.getraenke; }
+    else if(target==='medikamente'){ field='medikamente'; list=CHIPS.medikamente; box=boxes.medikamente; }
+    else {
+      const g = target.slice(6);
+      field='items'; list = CHIPS.essen[g] = CHIPS.essen[g]||[]; box = boxes[target];
+      if(allFood.indexOf(v)<0) allFood.push(v);
     }
-    oInp.value = ''; renderSel(); syncChips('items');
+    let neu = false;
+    if(list.indexOf(v)<0){
+      list.push(v); neu = true;
+      await metaSet('chips', CHIPS);
+      if(box){
+        box.appendChild(makeChip(field, v, true, field==='medikamente' ? ()=>{ renderSel(); updMedCnt(); } : renderSel));
+        const d = box.parentNode && box.parentNode.parentNode;
+        if(d && d.tagName==='DETAILS') d.open = true;
+      }
+    }
+    if((cur[field]||[]).indexOf(v)<0) (cur[field]=cur[field]||[]).push(v);
+    await metaSet('lastAddGroup', target);
+    oInp.value = '';
+    syncChips(field); renderSel(); updMedCnt();
+    toast(neu ? '"'+v+'" gespeichert in '+oSel.options[oSel.selectedIndex].text : '"'+v+'" gewählt');
   };
-  oRow.appendChild(oInp); oRow.appendChild(oBtn);
+  oRow.appendChild(oSel); oRow.appendChild(oBtn);
   own.appendChild(oRow);
-  own.appendChild(el('div',{class:'hint',text:'Wird automatisch zur Gruppe "Eigene" hinzugefügt.'}));
+  own.appendChild(el('div',{class:'hint',text:'Bleibt als Chip in der gewählten Liste — auch für Getränke und Supplemente.'}));
   gWrap.appendChild(own);
   root.appendChild(gWrap);
 
@@ -818,9 +860,32 @@ async function openEssen(rec){
   const dAll = el('details',{});
   dAll.appendChild(el('summary',{},'Alle Getränke'));
   const dInn = el('div',{class:'in'});
-  dInn.appendChild(chipsBox('getraenke', CHIPS.getraenke, true, renderSel));
+  const dBox = chipsBox('getraenke', CHIPS.getraenke, true, renderSel);
+  boxes.getraenke = dBox;
+  dInn.appendChild(dBox);
   dAll.appendChild(dInn); dWrap.appendChild(dAll);
   root.appendChild(dWrap);
+
+  /* Medikamente & Supplemente zur Mahlzeit */
+  const mWrap = el('div',{class:'fld'});
+  mWrap.appendChild(el('label',{text:'Medikamente & Supplemente'}));
+  const mDet = el('details', cur.medikamente.length ? {open:'open'} : {});
+  const mSum = el('summary',{},'Zu dieser Mahlzeit eingenommen');
+  const mCnt = el('span',{class:'cnt'}); mCnt.style.display = 'none';
+  mSum.appendChild(mCnt);
+  mDet.appendChild(mSum);
+  const mInn = el('div',{class:'in'});
+  const mBox = chipsBox('medikamente', CHIPS.medikamente, true, ()=>{ renderSel(); updMedCnt(); });
+  boxes.medikamente = mBox;
+  mInn.appendChild(mBox);
+  mDet.appendChild(mInn); mWrap.appendChild(mDet);
+  mWrap.appendChild(el('div',{class:'hint',text:'Nur was du zu dieser Mahlzeit nimmst. Die Tagesübersicht bleibt im Tagesabschluss.'}));
+  root.appendChild(mWrap);
+  function updMedCnt(){
+    const n = (cur.medikamente||[]).length;
+    mCnt.textContent = n; mCnt.style.display = n ? '' : 'none';
+  }
+  updMedCnt();
 
   const fl = el('div',{class:'fld'});
   fl.appendChild(el('label',{text:'Flags'}));
@@ -843,8 +908,8 @@ function guessMahlzeit(d){
 }
 async function saveEssen(){
   const iv = $('#tsInput-essen'); if(iv && iv.value){ const d = fromLocalInput(iv.value); cur.ts = toISO(d); cur.datum = dateKey(d); }
-  if(!(cur.items||[]).length && !(cur.getraenke||[]).length && !cur.notiz.trim()){
-    toast('Bitte mindestens ein Lebensmittel, Getränk oder Freitext'); return;
+  if(!(cur.items||[]).length && !(cur.getraenke||[]).length && !(cur.medikamente||[]).length && !cur.notiz.trim()){
+    toast('Bitte mindestens ein Lebensmittel, Getränk, Supplement oder Freitext'); return;
   }
   cur.updated = toISO(new Date());
   await dbPut('essen', cur);
@@ -1075,7 +1140,7 @@ const CODEBOOK = {
   energie_richtung:'Achtung: bei energie und schlaf_qualitaet bedeutet 3 = gut, bei allen Symptom-Skalen 3 = stark.'
 };
 const CSV_COLS = {
-  essen:['id','ts','datum','zeit','typ','items','getraenke','zubereitung','kaffee','alkohol','suessstoffe','notiz','erfasst_am','geaendert_am'],
+  essen:['id','ts','datum','zeit','typ','items','getraenke','medikamente','zubereitung','kaffee','alkohol','suessstoffe','notiz','erfasst_am','geaendert_am'],
   stuhl:['id','ts','datum','zeit','bristol','dringlichkeit','geruch','schmerz_vorher','schmerz_nachher','farbe','schwimmt','unverdaute_reste','schleim','blut','notiz','erfasst_am','geaendert_am'],
   tag:['datum','blaehungen','bauchschmerz','energie','stress','schlaf_zubett','schlaf_auf','schlaf_dauer_min','schlaf_qualitaet','medikamente','sport','reise','besonderes','notiz','erfasst_am','geaendert_am']
 };
@@ -1093,7 +1158,7 @@ function buildCSV(kind, rows, sep){
   rows.forEach(r=>{
     let o;
     if(kind==='essen') o = {id:r.id, ts:r.ts, datum:r.datum, zeit:isoTime(r.ts), typ:r.typ,
-      items:r.items, getraenke:r.getraenke, zubereitung:r.zubereitung,
+      items:r.items, getraenke:r.getraenke, medikamente:r.medikamente, zubereitung:r.zubereitung,
       kaffee:B(r.kaffee), alkohol:B(r.alkohol), suessstoffe:B(r.suessstoffe),
       notiz:r.notiz, erfasst_am:r.created, geaendert_am:r.updated};
     else if(kind==='stuhl') o = {id:r.id, ts:r.ts, datum:r.datum, zeit:isoTime(r.ts), bristol:r.bristol,
@@ -1402,6 +1467,7 @@ document.addEventListener('visibilitychange', ()=>{
     if(!CHIPS){ CHIPS = JSON.parse(JSON.stringify(DEFAULT_CHIPS)); await metaSet('chips', CHIPS); }
     if(!CHIPS.essen) CHIPS.essen = JSON.parse(JSON.stringify(DEFAULT_CHIPS.essen));
     ['getraenke','sport','medikamente'].forEach(k=>{ if(!Array.isArray(CHIPS[k])) CHIPS[k] = DEFAULT_CHIPS[k].slice(); });
+    if(!CHIPS.essen['Eigene']){ CHIPS.essen['Eigene'] = []; await metaSet('chips', CHIPS); }
     SETTINGS = await metaGet('settings', {sep:';'});
     if(!SETTINGS.sep) SETTINGS.sep = ';';
     if(!(await metaGet('firstUse', null))) await metaSet('firstUse', toISO(new Date()));
