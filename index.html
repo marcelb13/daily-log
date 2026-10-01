@@ -273,7 +273,7 @@ details .in{padding:0 14px 14px}
    gleich, siehst du auf dem iPhone ewig die alte Fassung.
    Kontrolle danach: Info → Offline-Cache zeigt dieselbe Nummer, keine Warnung.
    =========================================================================== */
-const APP_VERSION = '1.3.0';
+const APP_VERSION = '1.4.0';
 const DB_NAME = 'verdauungstagebuch';
 const DB_VERSION = 1;
 const STORES = ['essen','stuhl','tag','meta'];
@@ -315,7 +315,7 @@ const DEFAULT_CHIPS = {
     'Fertig & Auswärts':['Pizza','Sandwich','Take-away','Kantine','Restaurant','Fertiggericht','Dosensuppe','Pommes frites','Kebab','Burger','Sushi']
   },
   getraenke:['Hahnenwasser','Mineral mit Gas','Mineral ohne Gas','Kaffee','Espresso','Milchkaffee','Schwarztee','Grüntee','Kräutertee','Pfefferminztee','Fencheltee','Rivella','Cola','Cola Zero','Süssgetränk','Orangensaft','Apfelsaft','Bier','Wein rot','Wein weiss','Spirituosen','Ovomaltine','Sirup','Proteinshake'],
-  sport:['Spaziergang','Joggen','Velo','Kraft','Schwimmen','Wandern','Yoga','Fussball','Ski','Nichts'],
+  sport:['Spaziergang','Joggen','Velo','Kraft','Schwimmen','Wandern','Yoga','Fussball','Tennis','Kitesurfing','Ski','Nichts'],
   medikamente:['Keine','Vitamin D','Magnesium','Probiotika','Schmerzmittel','Antibiotika','Magenschutz/PPI','Abführmittel','Flohsamen','Eisen','Antihistaminikum']
 };
 
@@ -347,6 +347,16 @@ const isoDate = iso => (iso||'').slice(0,10);
 const uid = () => Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);
 const nz = v => (v==null||v==='') ? '–' : v;
 const WD = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+/* Standard-Zeitpunkt für einen neuen Eintrag: der im Startscreen angesehene Tag,
+   mit der aktuellen Uhrzeit. Nur wenn das heute ist, ist es wirklich "jetzt".   */
+function neuerZeitpunkt(){
+  const jetzt = new Date();
+  if(viewDay === dateKey(jetzt)) return jetzt;
+  const d = fromDateKey(viewDay);
+  d.setHours(jetzt.getHours(), jetzt.getMinutes(), 0, 0);
+  return d;
+}
+const istHeute = key => key === dateKey(new Date());
 function prettyDay(key){
   const d = fromDateKey(key), t = dateKey(new Date());
   const y = dateKey(new Date(Date.now()-864e5));
@@ -518,6 +528,36 @@ function chipsField(label, field, list, multi, onChange){
   f.appendChild(chipsBox(field, list, multi, onChange));
   return f;
 }
+/* Chips plus Eingabefeld für eigene Einträge — schreibt dauerhaft in CHIPS[listKey] */
+function chipsFieldPlus(label, field, listKey, platzhalter, onChange){
+  const f = el('div',{class:'fld'});
+  f.appendChild(el('label',{text:label}));
+  const liste = CHIPS[listKey] = CHIPS[listKey] || [];
+  const box = chipsBox(field, liste, true, onChange);
+  f.appendChild(box);
+  const row = el('div',{class:'row',style:'margin-top:9px'});
+  const inp = el('input',{type:'text',id:'add-'+field,placeholder:platzhalter||'Eigenes hinzufügen'});
+  const btn = el('button',{type:'button',class:'hbtn prim',text:'Hinzufügen'});
+  btn.style.whiteSpace = 'nowrap';
+  btn.onclick = async ()=>{
+    const v = inp.value.trim();
+    if(!v){ toast('Zuerst einen Namen eintippen'); return; }
+    let neu = false;
+    if(liste.indexOf(v) < 0){
+      liste.push(v); neu = true;
+      await metaSet('chips', CHIPS);
+      box.appendChild(makeChip(field, v, true, onChange));
+    }
+    if((cur[field]||[]).indexOf(v) < 0) (cur[field] = cur[field]||[]).push(v);
+    inp.value = '';
+    syncChips(field);
+    if(onChange) onChange();
+    toast(neu ? '"'+v+'" gespeichert' : '"'+v+'" gewählt');
+  };
+  row.appendChild(inp); row.appendChild(btn);
+  f.appendChild(row);
+  return f;
+}
 /* Ordinalskala 0–3 */
 function scaleField(label, field, labels){
   const f = el('div',{class:'fld'});
@@ -596,10 +636,16 @@ function bristolField(){
   return f;
 }
 /* Kopfzeile im Formular + Speicherleiste */
+/* Macht sichtbar, wenn ein Eintrag auf einen anderen als den heutigen Tag geht */
+function tagHinweis(key){
+  return istHeute(key) ? '' : '⚠ Dieser Eintrag geht auf ' + prettyDay(key).replace('Gestern · ','Gestern, ');
+}
 function formHead(title, sub){
   const d = el('div',{class:'fld'});
   d.appendChild(el('h1',{style:'font-size:24px;font-weight:700;letter-spacing:-.5px',text:title}));
-  if(sub) d.appendChild(el('div',{class:'hint',text:sub}));
+  const h = el('div',{class:'hint',text:sub||''});   // bleibt leer, lässt sich später füllen
+  d.appendChild(h);
+  d._hint = h;
   return d;
 }
 function saveBar(onSave, onDelete){
@@ -693,7 +739,7 @@ $('#dNext').onclick = ()=>{ const d=fromDateKey(viewDay); d.setDate(d.getDate()+
 /* ---------- Essen ---------- */
 async function openEssen(rec){
   curType = 'essen';
-  const now = new Date();
+  const now = neuerZeitpunkt();
   cur = rec ? JSON.parse(JSON.stringify(rec)) : {
     id:uid(), ts:toISO(now), datum:dateKey(now), typ:'', items:[], getraenke:[], medikamente:[],
     zubereitung:[], kaffee:false, alkohol:false, suessstoffe:false, notiz:'',
@@ -715,9 +761,11 @@ async function openEssen(rec){
 
   const root = $('#f-essen'); root.innerHTML = '';
   let typTouched = !!rec;
-  root.appendChild(formHead(rec?'Essen bearbeiten':'Essen erfassen'));
+  const kopf = formHead(rec?'Essen bearbeiten':'Essen erfassen', tagHinweis(cur.datum));
+  root.appendChild(kopf);
   root.appendChild(timeField('Zeitpunkt', d, nd=>{
     d = nd; cur.ts = toISO(nd); cur.datum = dateKey(nd);
+    kopf._hint.textContent = tagHinweis(cur.datum);                    // Hinweis folgt dem Datum
     if(!typTouched){ cur.typ = guessMahlzeit(nd); syncChips('typ'); }   // Mahlzeit folgt der Zeit, bis manuell gewählt
   }));
   root.appendChild(chipsField('Mahlzeit', 'typ', MAHLZEIT, false, ()=>{ typTouched = true; }));
@@ -923,7 +971,7 @@ async function saveEssen(){
 /* ---------- Stuhl ---------- */
 async function openStuhl(rec){
   curType = 'stuhl';
-  const now = new Date();
+  const now = neuerZeitpunkt();
   cur = rec ? JSON.parse(JSON.stringify(rec)) : {
     id:uid(), ts:toISO(now), datum:dateKey(now), art:'stuhlgang', bristol:null,
     dringlichkeit:null, geruch:null, schmerz_vorher:null, schmerz_nachher:null,
@@ -934,8 +982,12 @@ async function openStuhl(rec){
   const d = rec ? fromLocalInput(cur.ts.slice(0,16)) : now;
 
   const root = $('#f-stuhl'); root.innerHTML = '';
-  root.appendChild(formHead(rec?'Stuhl bearbeiten':'Stuhl erfassen'));
-  root.appendChild(timeField('Zeitpunkt', d, nd=>{ cur.ts=toISO(nd); cur.datum=dateKey(nd); }));
+  const kopf = formHead(rec?'Stuhl bearbeiten':'Stuhl erfassen', tagHinweis(cur.datum));
+  root.appendChild(kopf);
+  root.appendChild(timeField('Zeitpunkt', d, nd=>{
+    cur.ts = toISO(nd); cur.datum = dateKey(nd);
+    kopf._hint.textContent = tagHinweis(cur.datum);
+  }));
 
   /* Art des Eintrags: echter Stuhlgang oder vergeblicher Gang */
   const af = el('div',{class:'fld'});
@@ -1003,7 +1055,7 @@ async function saveStuhl(){
 /* ---------- Tagesabschluss ---------- */
 async function openTag(datum){
   curType = 'tag';
-  const key = datum || dateKey(new Date());
+  const key = datum || viewDay || dateKey(new Date());
   const ex = await dbGet('tag', key);
   const now = new Date();
   cur = ex ? JSON.parse(JSON.stringify(ex)) : {
@@ -1016,7 +1068,8 @@ async function openTag(datum){
   cur._auf_t = cur.schlaf_auf ? isoTime(cur.schlaf_auf) : '';
 
   const root = $('#f-tag'); root.innerHTML = '';
-  root.appendChild(formHead('Tagesabschluss', prettyDay(key)+(ex?' · bereits erfasst, wird überschrieben':'')));
+  root.appendChild(formHead('Tagesabschluss', prettyDay(key)+(ex?' · bereits erfasst, wird überschrieben':'')
+                            +(istHeute(key)?'':' · nicht heute')));
 
   const df = el('div',{class:'fld'});
   df.appendChild(el('label',{text:'Datum'}));
@@ -1048,8 +1101,8 @@ async function openTag(datum){
   root.appendChild(sl);
   root.appendChild(scaleField('Schlafqualität','schlaf_qualitaet',SC.schlafqual));
 
-  root.appendChild(chipsField('Medikamente & Supplemente','medikamente',CHIPS.medikamente,true));
-  root.appendChild(chipsField('Sport & Bewegung','sport',CHIPS.sport,true));
+  root.appendChild(chipsFieldPlus('Medikamente & Supplemente','medikamente','medikamente','z.B. Vitamin B12'));
+  root.appendChild(chipsFieldPlus('Sport & Bewegung','sport','sport','z.B. Klettern'));
   const rb = el('div',{class:'fld'});
   rb.appendChild(el('label',{text:'Besonderes'}));
   rb.appendChild(boolRow('Reise / auswärts geschlafen','reise'));
@@ -1513,6 +1566,15 @@ document.addEventListener('visibilitychange', ()=>{
     if(!CHIPS.essen) CHIPS.essen = JSON.parse(JSON.stringify(DEFAULT_CHIPS.essen));
     ['getraenke','sport','medikamente'].forEach(k=>{ if(!Array.isArray(CHIPS[k])) CHIPS[k] = DEFAULT_CHIPS[k].slice(); });
     if(!CHIPS.essen['Eigene']){ CHIPS.essen['Eigene'] = []; await metaSet('chips', CHIPS); }
+    /* Einmalig, additiv: später gelöschte Chips kommen nicht wieder */
+    if(!(await metaGet('migr_sport_140', false))){
+      let geaendert = false;
+      ['Tennis','Kitesurfing'].forEach(n=>{
+        if(CHIPS.sport.indexOf(n) < 0){ CHIPS.sport.push(n); geaendert = true; }
+      });
+      if(geaendert) await metaSet('chips', CHIPS);
+      await metaSet('migr_sport_140', true);
+    }
     SETTINGS = await metaGet('settings', {sep:';'});
     if(!SETTINGS.sep) SETTINGS.sep = ';';
     if(!(await metaGet('firstUse', null))) await metaSet('firstUse', toISO(new Date()));
